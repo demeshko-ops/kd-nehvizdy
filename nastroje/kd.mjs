@@ -2,7 +2,8 @@ import fs from 'fs';
 const H0 = fs.readFileSync('site/index.html','utf8');
 export const URL_ = /const SUPA_URL = "([^"]+)"/.exec(H0)[1];
 export const KEY  = /const SUPA_KEY = "([^"]+)"/.exec(H0)[1];
-export const TOK  = 'nIMJ-QB-fKbN';
+export const TOK  = process.env.KD_TOKEN;
+if(!TOK) throw new Error('Chybí KD_TOKEN. Spusť: KD_TOKEN=<kód> node nastroje/...');
 const H = {apikey:KEY, Authorization:'Bearer '+KEY, 'Content-Type':'application/json',
            'x-edit-token':TOK, Prefer:'return=representation'};
 export const api = async (p, o={}) => {
