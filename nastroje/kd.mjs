@@ -14,3 +14,5 @@ export const api = async (p, o={}) => {
 };
 export const cz = iso => { if(!iso) return ''; const d=String(iso).slice(0,10).split('-');
   return `${+d[2]}. ${+d[1]}. ${d[0]}`; };
+export const toIso = s => { const m=/^(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})$/.exec(String(s||'').trim());
+  return m ? `${m[3]}-${String(m[2]).padStart(2,'0')}-${String(m[1]).padStart(2,'0')}` : null; };
