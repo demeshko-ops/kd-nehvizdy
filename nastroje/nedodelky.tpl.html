@@ -92,6 +92,12 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
 .chk{width:22px;height:22px;margin-top:1px;accent-color:var(--hotovo);cursor:pointer}
 .chk:disabled{cursor:not-allowed;opacity:.45}
 .txt{font-size:15.5px;line-height:1.5}
+.prof{font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:600;letter-spacing:.06em;
+  border:1px solid var(--line2);border-radius:4px;padding:1px 5px;margin-right:7px;
+  color:var(--muted);background:var(--card2);vertical-align:1px}
+.prof.p-ELE{color:#1a4f8a;border-color:#bcd0e6;background:#eaf1f9}
+.prof.p-ZTI{color:#0f6d4a;border-color:#b6d9c9;background:#e8f4ee}
+.row.hot .prof{opacity:.6}
 .mist{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
   color:var(--muted);display:block;margin-bottom:3px}
 .meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:7px;
@@ -203,13 +209,16 @@ const BASE = __BASE__;
 const LIDE = ["Marina","pan Zeman","pan Kret","pan Kuchař","S. Zavodnov","P. Jelínek","vlastní parta"];
 const esc = s => String(s??"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const dnes = () => new Date().toISOString().slice(0,10);
+const RE_PROF = /^([A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ]{2,5})\s*:\s*/;
+const profese = t => { const m = RE_PROF.exec(String(t||"")); return m ? m[1] : ""; };
+const bezProf = t => String(t||"").replace(RE_PROF, "");
 const cz = iso => { if(!iso) return ""; const d=String(iso).slice(0,10).split("-"); return `${+d[2]}. ${+d[1]}. ${d[0]}`; };
 
 let editToken=null, me=null, isOwner=false, dbReady=false, sb=null;
 try{ editToken = localStorage.getItem("kd-token") || null; }catch(e){}
 try{ me = localStorage.getItem("kd-podpis") || null; }catch(e){}
 
-let ui = {tab:"nedodelky", podlazi:"all", byt:"all", stav:"otevrene", otevrene:{}};
+let ui = {tab:"nedodelky", podlazi:"all", byt:"all", prof:"all", stav:"otevrene", otevrene:{}};
 try{ const s=JSON.parse(localStorage.getItem("ned-ui")||"null"); if(s&&typeof s==="object") ui=Object.assign(ui,s); }catch(e){}
 const saveUi = () => { try{ localStorage.setItem("ned-ui", JSON.stringify(ui)); }catch(e){} };
 
@@ -314,6 +323,7 @@ const zive = () => [...data.values()].filter(r=>!r.skryto && r.sekce===ui.tab);
 function vFiltru(r){
   return (ui.podlazi==="all" || r.podlazi===ui.podlazi)
       && (ui.byt==="all" || r.byt===ui.byt)
+      && (ui.prof==="all" || (ui.prof==="bez" ? !profese(r.bod) : profese(r.bod)===ui.prof))
       && (ui.stav==="all" || (ui.stav==="hotove" ? r.hotovo : !r.hotovo));
 }
 
@@ -346,11 +356,17 @@ function render(){
 
   const pod = [...new Set(sc.map(r=>r.podlazi))];
   const byty = [...new Set(sc.filter(r=>ui.podlazi==="all"||r.podlazi===ui.podlazi).map(r=>r.byt))];
+  const profs = [...new Set(sc.map(r=>profese(r.bod)).filter(Boolean))].sort();
   const ch = (f, vals, popisky) => [`<button class="chip" aria-pressed="${ui[f]==="all"}" data-f="${f}" data-v="all">Vše</button>`]
     .concat(vals.map(v=>`<button class="chip" aria-pressed="${ui[f]===v}" data-f="${f}" data-v="${esc(v)}">${esc((popisky||{})[v]||v)}</button>`)).join("");
   document.getElementById("filters").innerHTML = `<div class="filters">
     <div class="fgroup"><h3>Podlaží</h3><div class="fchips">${ch("podlazi", pod)}</div></div>
     <div class="fgroup"><h3>Byt</h3><div class="fchips">${ch("byt", byty)}</div></div>
+    ${profs.length?`<div class="fgroup"><h3>Profese</h3><div class="fchips">
+      <button class="chip" aria-pressed="${ui.prof==="all"}" data-f="prof" data-v="all">Vše</button>
+      ${profs.map(pf=>`<button class="chip" aria-pressed="${ui.prof===pf}" data-f="prof" data-v="${esc(pf)}">${esc(pf)}</button>`).join("")}
+      <button class="chip" aria-pressed="${ui.prof==="bez"}" data-f="prof" data-v="bez">bez profese</button>
+    </div></div>`:""}
     <div class="fgroup"><h3>Stav</h3><div class="fchips">
       <button class="chip" aria-pressed="${ui.stav==="all"}" data-f="stav" data-v="all">Vše</button>
       <button class="chip" aria-pressed="${ui.stav==="otevrene"}" data-f="stav" data-v="otevrene">Otevřené</button>
@@ -370,7 +386,7 @@ function render(){
       <button class="ghead" data-act="grp" data-byt="${esc(g.byt)}">
         <span><span class="gbyt">${/^\d+$/.test(g.byt) ? "Byt " + esc(g.byt) : esc(g.byt)}</span>
           <span class="gpod"> &nbsp;${esc(g.podlazi)}</span></span>
-        <span class="gpoc"><b>${hotG}</b> z ${g.vse.length} hotovo</span>
+        <span class="gpoc">${[...new Set(g.vse.map(r=>profese(r.bod)).filter(Boolean))].sort().map(pf=>`<span class="prof p-${esc(pf)}">${esc(pf)}</span>`).join("")}<b>${hotG}</b> z ${g.vse.length} hotovo</span>
         <span class="gcaret">&#9656;</span>
       </button>
       <div class="gbody">
@@ -394,7 +410,7 @@ function radek(r){
       <div class="txt">
         ${r.mistnost?`<span class="mist">${esc(r.mistnost)}</span>`:""}
         ${upr ? `<input type="text" data-act="bodTxt" data-id="${esc(r.id)}" value="${esc(r.bod)}">`
-              : esc(r.bod)}
+              : (profese(r.bod)?`<span class="prof p-${esc(profese(r.bod))}">${esc(profese(r.bod))}</span>`:"") + esc(bezProf(r.bod))}
       </div>
       <div class="meta">
         ${r.hotovo ? `<span><b>hotovo</b> ${esc(r.uzavrel||"")}${r.uzavreno_at?" · "+cz(r.uzavreno_at):""}</span>` : `<span>otevřeno</span>`}

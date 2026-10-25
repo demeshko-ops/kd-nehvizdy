@@ -10,7 +10,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 1,
+  "poradi": 100,
   "skryto": false
  },
  {
@@ -24,7 +24,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 2,
+  "poradi": 101,
   "skryto": false
  },
  {
@@ -38,7 +38,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 3,
+  "poradi": 102,
   "skryto": false
  },
  {
@@ -52,7 +52,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 4,
+  "poradi": 103,
   "skryto": false
  },
  {
@@ -66,7 +66,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 5,
+  "poradi": 104,
   "skryto": false
  },
  {
@@ -80,7 +80,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 6,
+  "poradi": 105,
   "skryto": false
  },
  {
@@ -94,7 +94,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 7,
+  "poradi": 106,
   "skryto": false
  },
  {
@@ -103,12 +103,12 @@
   "podlazi": "Obecné",
   "byt": "3. NP – mezi byty",
   "mistnost": "Koupelny",
-  "bod": "Výška koupelen ve 3. NP: 2,40 m čistá a PBŘ strop na 3 m",
+  "bod": "Výška koupelen ve 3. NP: 2,40 m čistá a PBŘ strop na 3m",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 8,
+  "poradi": 107,
   "skryto": false
  },
  {
@@ -117,12 +117,12 @@
   "podlazi": "2. NP",
   "byt": "16",
   "mistnost": "Koupelna",
-  "bod": "Krabice: rohož na zdi vlevo nad pračkou, ovládací termostat na stoupačce",
+  "bod": "ELE: Krabice: rohož na zdi vlevo nad pračkou, ovládací termostat na stoupačce",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 11,
+  "poradi": 108,
   "skryto": false
  },
  {
@@ -131,12 +131,12 @@
   "podlazi": "2. NP",
   "byt": "16",
   "mistnost": "Koupelna",
-  "bod": "Chybí spád pod žlab, vzdálenost ke stoupačce 1,5 m",
+  "bod": "ZTI: Chybí spád pod žlab, vzdálenost ke stoupačce 1,5 m",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 12,
+  "poradi": 109,
   "skryto": false
  },
  {
@@ -145,12 +145,12 @@
   "podlazi": "2. NP",
   "byt": "16",
   "mistnost": "Koupelna",
-  "bod": "Vrtat díru dolů pod žlabem, vyvést kanalizaci přes úklidovou místnost",
+  "bod": "ZTI: Vrtat díru dolů pod žlabem, vyvést kanalizaci přes úklidovou místnost",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 13,
+  "poradi": 110,
   "skryto": false
  },
  {
@@ -159,12 +159,12 @@
   "podlazi": "2. NP",
   "byt": "17",
   "mistnost": "",
-  "bod": "Chybí rozvod vody v každém bytě (rozdělen na 3 byty)",
+  "bod": "ZTI: Chybí rozvod vody v každém bytě (rozdělen na 3 byty)",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 21,
+  "poradi": 111,
   "skryto": false
  },
  {
@@ -173,12 +173,12 @@
   "podlazi": "2. NP",
   "byt": "17",
   "mistnost": "Koupelna",
-  "bod": "Úprava odpadu v nové SDK předstěně",
+  "bod": "ZTI: Úprava odpadu v nové SDK předstěně",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 22,
+  "poradi": 112,
   "skryto": false
  },
  {
@@ -187,12 +187,12 @@
   "podlazi": "2. NP",
   "byt": "17",
   "mistnost": "Koupelna uprostřed",
-  "bod": "Přidělat vývod kanalizace pod vanu",
+  "bod": "ZTI: Přidělat vývod kanalizace pod vanu",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 23,
+  "poradi": 113,
   "skryto": false
  },
  {
@@ -206,7 +206,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 24,
+  "poradi": 114,
   "skryto": false
  },
  {
@@ -220,7 +220,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 25,
+  "poradi": 115,
   "skryto": false
  },
  {
@@ -234,21 +234,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 26,
-  "skryto": false
- },
- {
-  "id": "k17-klima",
-  "sekce": "nedodelky",
-  "podlazi": "2. NP",
-  "byt": "17",
-  "mistnost": "",
-  "bod": "Klima: 3 venkovní a 3 vnitřní jednotky",
-  "hotovo": false,
-  "uzavrel": null,
-  "uzavreno_at": null,
-  "poznamka": null,
-  "poradi": 27,
+  "poradi": 116,
   "skryto": false
  },
  {
@@ -262,7 +248,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 28,
+  "poradi": 117,
   "skryto": false
  },
  {
@@ -276,7 +262,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 29,
+  "poradi": 118,
   "skryto": false
  },
  {
@@ -290,7 +276,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 30,
+  "poradi": 119,
   "skryto": false
  },
  {
@@ -304,7 +290,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 31,
+  "poradi": 120,
   "skryto": false
  },
  {
@@ -318,7 +304,21 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 32,
+  "poradi": 121,
+  "skryto": false
+ },
+ {
+  "id": "k17-klima",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "17",
+  "mistnost": "",
+  "bod": "Klima: 3 venkovní a 3 vnitřní jednotky",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 122,
   "skryto": false
  },
  {
@@ -332,7 +332,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 41,
+  "poradi": 123,
   "skryto": false
  },
  {
@@ -341,12 +341,12 @@
   "podlazi": "2. NP",
   "byt": "18",
   "mistnost": "",
-  "bod": "Rozvod vody kompletně",
+  "bod": "ZTI: Rozvod vody kompletně",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 42,
+  "poradi": 124,
   "skryto": false
  },
  {
@@ -355,12 +355,12 @@
   "podlazi": "2. NP",
   "byt": "18",
   "mistnost": "",
-  "bod": "Domofon včetně přívodu (kabelu)",
+  "bod": "ELE: Domofon včetně přívodu (kabelu)",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 43,
+  "poradi": 125,
   "skryto": false
  },
  {
@@ -369,12 +369,12 @@
   "podlazi": "2. NP",
   "byt": "18",
   "mistnost": "",
-  "bod": "Uzemnění",
+  "bod": "ELE: Uzemnění",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 44,
+  "poradi": 126,
   "skryto": false
  },
  {
@@ -383,12 +383,12 @@
   "podlazi": "2. NP",
   "byt": "18",
   "mistnost": "",
-  "bod": "Internetový kabel a anténa nejsou dovedeny",
+  "bod": "ELE: Internetový kabel a anténa nejsou dovedeny",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 45,
+  "poradi": 127,
   "skryto": false
  },
  {
@@ -397,12 +397,12 @@
   "podlazi": "2. NP",
   "byt": "18",
   "mistnost": "Koupelna",
-  "bod": "Posunout světlo nad umyvadlem",
+  "bod": "ELE: Posunout světlo nad umyvadlem",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 46,
+  "poradi": 128,
   "skryto": false
  },
  {
@@ -416,7 +416,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 47,
+  "poradi": 129,
   "skryto": false
  },
  {
@@ -425,12 +425,12 @@
   "podlazi": "2. NP",
   "byt": "19",
   "mistnost": "",
-  "bod": "Chybí rozvody vody do všech koupelen a kuchyně, propojení vody",
+  "bod": "ELE: Chybí rozvody vody do všech koupelen a kuchyně, propojení vody",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 51,
+  "poradi": 130,
   "skryto": false
  },
  {
@@ -439,12 +439,12 @@
   "podlazi": "2. NP",
   "byt": "19",
   "mistnost": "Koupelna",
-  "bod": "Chybí výdřeva (fošna) pod umyvadlo",
+  "bod": "ZTI: Chybí výdřeva (fošna) pod umyvadlo",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 52,
+  "poradi": 131,
   "skryto": false
  },
  {
@@ -453,12 +453,12 @@
   "podlazi": "2. NP",
   "byt": "19",
   "mistnost": "Koupelna",
-  "bod": "Instalatéři určí výšku umyvadla",
+  "bod": "ZTI: Instalatéři určí výšku umyvadla",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 53,
+  "poradi": 132,
   "skryto": false
  },
  {
@@ -467,12 +467,12 @@
   "podlazi": "2. NP",
   "byt": "19",
   "mistnost": "2.50",
-  "bod": "Koupelna s vaničkou: změnit odpad, snížit co nejníž, dodržet spád na připojení vaničky",
+  "bod": "ZTI: Koupelna s vaničkou: změnit odpad, snížit co nejníž, dodržet spád na připojení vaničky",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 54,
+  "poradi": 133,
   "skryto": false
  },
  {
@@ -481,12 +481,12 @@
   "podlazi": "2. NP",
   "byt": "19",
   "mistnost": "2.50",
-  "bod": "Případně vysekat díru pod sifon vaničky kvůli spádu",
+  "bod": "ZTI: Případně vysekat díru pod sifon vaničky kvůli spádu",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 55,
+  "poradi": 134,
   "skryto": false
  },
  {
@@ -500,7 +500,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 56,
+  "poradi": 135,
   "skryto": false
  },
  {
@@ -514,7 +514,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 57,
+  "poradi": 136,
   "skryto": false
  },
  {
@@ -528,7 +528,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 58,
+  "poradi": 137,
   "skryto": false
  },
  {
@@ -537,12 +537,12 @@
   "podlazi": "2. NP",
   "byt": "19",
   "mistnost": "",
-  "bod": "Domofon, uzemnění, anténa, data",
+  "bod": "ELE: Domofon, uzemnění, anténa, data",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 59,
+  "poradi": 138,
   "skryto": false
  },
  {
@@ -551,12 +551,12 @@
   "podlazi": "2. NP",
   "byt": "19",
   "mistnost": "2.53",
-  "bod": "Nasvorkovat světlo a vypínače",
+  "bod": "ELE: Nasvorkovat světlo a vypínače",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 60,
+  "poradi": 139,
   "skryto": false
  },
  {
@@ -565,12 +565,12 @@
   "podlazi": "2. NP",
   "byt": "20",
   "mistnost": "Koupelna",
-  "bod": "Opravit: posunout odpad na žlab",
+  "bod": "ZTI: Opravit: posunout odpad na žlab",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 61,
+  "poradi": 140,
   "skryto": false
  },
  {
@@ -579,12 +579,12 @@
   "podlazi": "3. NP",
   "byt": "25",
   "mistnost": "Koupelna",
-  "bod": "Posunout Geberit o 7 cm doleva",
+  "bod": "ZTI: Posunout Geberit o 7 cm doleva",
   "hotovo": false,
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 71,
+  "poradi": 141,
   "skryto": false
  },
  {
@@ -598,7 +598,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 81,
+  "poradi": 142,
   "skryto": false
  },
  {
@@ -612,7 +612,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 82,
+  "poradi": 143,
   "skryto": false
  },
  {
@@ -626,7 +626,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 83,
+  "poradi": 144,
   "skryto": false
  },
  {
@@ -640,7 +640,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 84,
+  "poradi": 145,
   "skryto": false
  },
  {
@@ -654,7 +654,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 85,
+  "poradi": 146,
   "skryto": false
  },
  {
@@ -668,7 +668,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 91,
+  "poradi": 147,
   "skryto": false
  },
  {
@@ -682,7 +682,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 92,
+  "poradi": 148,
   "skryto": false
  },
  {
@@ -696,7 +696,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 93,
+  "poradi": 149,
   "skryto": false
  },
  {
