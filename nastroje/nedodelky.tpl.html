@@ -30,6 +30,8 @@ body{margin:0;background:var(--paper);color:var(--ink);
 .sig,.btn{font-family:Archivo,sans-serif;font-size:12px;font-weight:600;color:var(--ink2);
   border:1px solid var(--line2);background:var(--card);border-radius:99px;padding:5px 11px;cursor:pointer}
 .sig:hover,.btn:hover{border-color:var(--blueprint)}
+.sig.vyzva{background:var(--blueprint);border-color:var(--blueprint);color:#fff;font-weight:700}
+.sig.vyzva:hover{opacity:.92}
 .sig small{color:var(--muted);font-weight:500}
 .conn{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--muted);white-space:nowrap}
 .conn b{color:var(--hotovo);font-weight:700} .conn i{color:var(--trva);font-style:normal;font-weight:700}
@@ -129,6 +131,7 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
 .pridat input.bod{flex:1;min-width:220px}
 .pridat input.mis{width:150px}
 .btn.primary{background:var(--blueprint);border-color:var(--blueprint);color:#fff;border-radius:5px}
+.zamek{color:var(--muted);font-size:14px}
 .prazdne{padding:22px 15px;color:var(--muted);font-style:italic;text-align:center}
 
 .newver{position:fixed;left:0;right:0;bottom:0;z-index:90;display:none;align-items:center;gap:14px;
@@ -214,7 +217,7 @@ const profese = t => { const m = RE_PROF.exec(String(t||"")); return m ? m[1] : 
 const bezProf = t => String(t||"").replace(RE_PROF, "");
 const cz = iso => { if(!iso) return ""; const d=String(iso).slice(0,10).split("-"); return `${+d[2]}. ${+d[1]}. ${d[0]}`; };
 
-let editToken=null, me=null, isOwner=false, dbReady=false, sb=null;
+let editToken=null, me=null, isOwner=false, dbReady=false, sb=null, zKodu="";
 try{ editToken = localStorage.getItem("kd-token") || null; }catch(e){}
 try{ me = localStorage.getItem("kd-podpis") || null; }catch(e){}
 
@@ -250,12 +253,16 @@ async function nactiVse(){
   render();
 }
 async function overToken(){
-  isOwner = false;
+  isOwner = false; zKodu = "";
   if(!editToken || !dbReady) return;
   try{
     const r = await rest("rpc/muze_psat", {method:"POST", body:"{}"});
     isOwner = r === true;
-    if(!isOwner){ editToken=null; try{localStorage.removeItem("kd-token");}catch(e){} toast("Kód pro úpravy neplatí."); }
+    if(!isOwner){ editToken=null; try{localStorage.removeItem("kd-token");}catch(e){} toast("Kód neplatí."); return; }
+    try{
+      const j = await rest("rpc/kdo_jsem", {method:"POST", body:"{}"});
+      if(j){ zKodu = j; me = j; try{ localStorage.setItem("kd-podpis", j); }catch(e){} }
+    }catch(e){}
   }catch(e){ isOwner = false; }
 }
 function realtime(){
@@ -337,12 +344,15 @@ function render(){
 
   const c = document.getElementById("conn");
   c.innerHTML = dbReady ? (isOwner ? `<b>živé</b> · úpravy odemčeny` : `<b>živé</b>`) : `<i>offline</i>`;
-  document.getElementById("lockBtn").innerHTML = isOwner ? `<small>zamknout</small> úpravy` : `<small>odemknout</small> úpravy`;
+  const lb = document.getElementById("lockBtn");
+  lb.className = isOwner ? "sig" : "sig vyzva";
+  lb.innerHTML = isOwner ? `<small>odhlásit</small> ${esc(me||"")}` : `Přihlásit se kódem`;
   const sg = document.getElementById("sigBtn");
+  sg.hidden = !!zKodu || !isOwner;
   sg.innerHTML = me ? `<small>podepsáno jako</small> ${esc(me)}` : `podepsat se`;
 
   document.getElementById("banner").innerHTML = dbReady
-    ? (isOwner ? "" : `<div class="banner">Seznam je živý a aktualizuje se sám. Zápis je zamčený kódem, bez něj jen čtete.</div>`)
+    ? (isOwner ? "" : `<div class="banner">Seznam je živý a aktualizuje se sám. Chcete odbavovat body nebo něco dopsat? Vpravo nahoře se přihlaste svým kódem.</div>`)
     : `<div class="banner">Data se nepodařilo načíst, vidíte poslední známý stav. Zkuste stránku načíst znovu.</div>`;
 
   const sc = zive();
@@ -391,11 +401,13 @@ function render(){
       </button>
       <div class="gbody">
         ${g.zobrazene.map(r=>radek(r)).join("")}
-        ${isOwner?`<div class="pridat" data-byt="${esc(g.byt)}" data-pod="${esc(g.podlazi)}">
-          <input class="mis" type="text" placeholder="Místnost (nepovinné)">
+        <div class="pridat" data-byt="${esc(g.byt)}" data-pod="${esc(g.podlazi)}">
+          ${isOwner?`<input class="mis" type="text" placeholder="Místnost (nepovinné)">
           <input class="bod" type="text" placeholder="Nový bod">
-          <button class="btn primary" data-act="pridat" data-byt="${esc(g.byt)}">Přidat</button>
-        </div>`:""}
+          <button class="btn primary" data-act="pridat">Přidat</button>`
+          :`<span class="zamek">Chcete sem něco dopsat nebo opravit?</span>
+            <button class="btn primary" data-act="prihlas">Přihlásit se kódem</button>`}
+        </div>
       </div></section>`;
   }).join("");
   document.getElementById("seznam").innerHTML = html || `<div class="grp"><div class="prazdne">Pro zvolený filtr tu nic není.</div></div>`;
@@ -404,8 +416,9 @@ function render(){
 function radek(r){
   const upr = upravuji.has(r.id);
   return `<div class="row ${r.hotovo?"hot":""}">
-    <input class="chk" type="checkbox" ${r.hotovo?"checked":""} ${isOwner?"":"disabled"}
-      data-act="hotovo" data-id="${esc(r.id)}" aria-label="Hotovo">
+    <input class="chk" type="checkbox" ${r.hotovo?"checked":""}
+      data-act="hotovo" data-id="${esc(r.id)}" aria-label="Hotovo"
+      title="${isOwner?"Odbavit bod":"Pro úpravy se přihlaste kódem"}">
     <div>
       <div class="txt">
         ${r.mistnost?`<span class="mist">${esc(r.mistnost)}</span>`:""}
@@ -451,7 +464,7 @@ function openWho(potom){
 function openKod(){
   const m = document.getElementById("modal");
   m.innerHTML = `<h4>Kód pro úpravy</h4>
-    <p>Bez kódu seznam jen čtete. S kódem můžete odbavovat body, psát poznámky a přidávat nové.</p>
+    <p>Bez kódu seznam jen čtete. S kódem můžete odbavovat body, psát poznámky, opravovat text a přidávat nové body. Kód máte od Mariny, každý svůj vlastní; podle něj se k vašim změnám připojí vaše jméno.</p>
     <input type="text" id="kodVstup" placeholder="kód" autocomplete="off">
     <div class="btnrow"><button class="btn primary" id="kodOk">Odemknout</button>
       <button class="btn" data-act="zavri">Zpět</button></div>`;
@@ -480,8 +493,11 @@ document.addEventListener("click", (e)=>{
     const k = ui.tab+"|"+el.dataset.byt;
     ui.otevrene[k] = ui.otevrene[k] === false; saveUi(); render(); return;
   }
-  if(act==="hotovo"){ prepniHotovo(id, el.checked); return; }
-  if(act==="poznPlus"){ poznOtevrene.add(id); render();
+  if(act==="hotovo"){
+    if(!isOwner){ el.checked = !el.checked; openKod(); return; }
+    prepniHotovo(id, el.checked); return; }
+  if(act==="prihlas"){ openKod(); return; }
+  if(act==="poznPlus"){ if(!isOwner){ openKod(); return; } poznOtevrene.add(id); render();
     const t=document.querySelector(`textarea[data-id="${CSS.escape(id)}"]`); if(t) t.focus(); return; }
   if(act==="uprav"){
     if(upravuji.has(id)) upravuji.delete(id); else upravuji.add(id);
@@ -489,6 +505,7 @@ document.addEventListener("click", (e)=>{
   }
   if(act==="smaz"){ smaz(id); return; }
   if(act==="pridat"){
+    if(!isOwner){ openKod(); return; }
     const box = el.closest(".pridat");
     const bod = box.querySelector(".bod").value, mis = box.querySelector(".mis").value;
     pridej(box.dataset.byt, box.dataset.pod, mis, bod);
