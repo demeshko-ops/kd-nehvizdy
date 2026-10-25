@@ -1,117 +1,5 @@
 [
  {
-  "id": "i001",
-  "sekce": "nedodelky",
-  "podlazi": "Obecné",
-  "byt": "Všechny byty",
-  "mistnost": "",
-  "bod": "Rozvod vody",
-  "hotovo": false,
-  "uzavrel": null,
-  "uzavreno_at": null,
-  "poznamka": null,
-  "poradi": 100,
-  "skryto": false
- },
- {
-  "id": "i002",
-  "sekce": "nedodelky",
-  "podlazi": "Obecné",
-  "byt": "Všechny byty",
-  "mistnost": "",
-  "bod": "Napojení klimy do rozvaděče",
-  "hotovo": false,
-  "uzavrel": null,
-  "uzavreno_at": null,
-  "poznamka": null,
-  "poradi": 101,
-  "skryto": false
- },
- {
-  "id": "i003",
-  "sekce": "nedodelky",
-  "podlazi": "Obecné",
-  "byt": "Všechny byty",
-  "mistnost": "",
-  "bod": "Uzemnění: žlutozelený kabel do hlavního rozvaděče bytu",
-  "hotovo": false,
-  "uzavrel": null,
-  "uzavreno_at": null,
-  "poznamka": null,
-  "poradi": 102,
-  "skryto": false
- },
- {
-  "id": "i004",
-  "sekce": "nedodelky",
-  "podlazi": "Obecné",
-  "byt": "Všechny byty",
-  "mistnost": "",
-  "bod": "Domofon, data a anténa",
-  "hotovo": false,
-  "uzavrel": null,
-  "uzavreno_at": null,
-  "poznamka": null,
-  "poradi": 103,
-  "skryto": false
- },
- {
-  "id": "i005",
-  "sekce": "nedodelky",
-  "podlazi": "Obecné",
-  "byt": "Všechny byty",
-  "mistnost": "",
-  "bod": "Zkontrolovat střed přívodu/odpadu vaničky",
-  "hotovo": false,
-  "uzavrel": null,
-  "uzavreno_at": null,
-  "poznamka": null,
-  "poradi": 104,
-  "skryto": false
- },
- {
-  "id": "i006",
-  "sekce": "nedodelky",
-  "podlazi": "Obecné",
-  "byt": "Všechny byty",
-  "mistnost": "",
-  "bod": "Protipožární ucpávka na každou trubku, lepit protipožární pásku",
-  "hotovo": false,
-  "uzavrel": null,
-  "uzavreno_at": null,
-  "poznamka": null,
-  "poradi": 105,
-  "skryto": false
- },
- {
-  "id": "i007",
-  "sekce": "nedodelky",
-  "podlazi": "Obecné",
-  "byt": "3. NP – mezi byty",
-  "mistnost": "",
-  "bod": "Akustické stěny mezi byty: ještě zajistit akustiku mezi byty",
-  "hotovo": false,
-  "uzavrel": null,
-  "uzavreno_at": null,
-  "poznamka": null,
-  "poradi": 106,
-  "skryto": false
- },
- {
-  "id": "np3-vyska-koupelen",
-  "sekce": "nedodelky",
-  "podlazi": "Obecné",
-  "byt": "3. NP – mezi byty",
-  "mistnost": "Koupelny",
-  "bod": "Výška koupelen ve 3. NP: 2,40 m čistá a PBŘ strop na 3m",
-  "hotovo": false,
-  "uzavrel": null,
-  "uzavreno_at": null,
-  "poznamka": null,
-  "poradi": 107,
-  "skryto": false
- },
- {
   "id": "i008",
   "sekce": "nedodelky",
   "podlazi": "2. NP",
@@ -122,7 +10,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 108,
+  "poradi": 100,
   "skryto": false
  },
  {
@@ -136,7 +24,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 109,
+  "poradi": 101,
   "skryto": false
  },
  {
@@ -150,7 +38,91 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 110,
+  "poradi": 102,
+  "skryto": false
+ },
+ {
+  "id": "g-i001-16",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "16",
+  "mistnost": "",
+  "bod": "ZTI: Rozvod vody",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 103,
+  "skryto": false
+ },
+ {
+  "id": "g-i002-16",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "16",
+  "mistnost": "",
+  "bod": "ELE: Napojení klimy do rozvaděče",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 104,
+  "skryto": false
+ },
+ {
+  "id": "g-i003-16",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "16",
+  "mistnost": "",
+  "bod": "ELE: Uzemnění: žlutozelený kabel do hlavního rozvaděče bytu",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 105,
+  "skryto": false
+ },
+ {
+  "id": "g-i004-16",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "16",
+  "mistnost": "",
+  "bod": "ELE: Domofon, data a anténa",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 106,
+  "skryto": false
+ },
+ {
+  "id": "g-i005-16",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "16",
+  "mistnost": "",
+  "bod": "ZTI: Zkontrolovat střed přívodu/odpadu vaničky",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 107,
+  "skryto": false
+ },
+ {
+  "id": "g-i006-16",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "16",
+  "mistnost": "",
+  "bod": "Protipožární ucpávka na každou trubku, lepit protipožární pásku",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 108,
   "skryto": false
  },
  {
@@ -164,7 +136,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 111,
+  "poradi": 109,
   "skryto": false
  },
  {
@@ -178,7 +150,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 112,
+  "poradi": 110,
   "skryto": false
  },
  {
@@ -192,7 +164,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 113,
+  "poradi": 111,
   "skryto": false
  },
  {
@@ -206,7 +178,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 114,
+  "poradi": 112,
   "skryto": false
  },
  {
@@ -220,7 +192,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 115,
+  "poradi": 113,
   "skryto": false
  },
  {
@@ -234,7 +206,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 116,
+  "poradi": 114,
   "skryto": false
  },
  {
@@ -248,7 +220,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 117,
+  "poradi": 115,
   "skryto": false
  },
  {
@@ -262,7 +234,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 118,
+  "poradi": 116,
   "skryto": false
  },
  {
@@ -276,7 +248,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 119,
+  "poradi": 117,
   "skryto": false
  },
  {
@@ -290,7 +262,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 120,
+  "poradi": 118,
   "skryto": false
  },
  {
@@ -304,7 +276,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 121,
+  "poradi": 119,
   "skryto": false
  },
  {
@@ -318,7 +290,49 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
+  "poradi": 120,
+  "skryto": false
+ },
+ {
+  "id": "g-i003-17",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "17",
+  "mistnost": "",
+  "bod": "ELE: Uzemnění: žlutozelený kabel do hlavního rozvaděče bytu",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 121,
+  "skryto": false
+ },
+ {
+  "id": "g-i005-17",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "17",
+  "mistnost": "",
+  "bod": "ZTI: Zkontrolovat střed přívodu/odpadu vaničky",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
   "poradi": 122,
+  "skryto": false
+ },
+ {
+  "id": "g-i006-17",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "17",
+  "mistnost": "",
+  "bod": "Protipožární ucpávka na každou trubku, lepit protipožární pásku",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 123,
   "skryto": false
  },
  {
@@ -332,7 +346,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 123,
+  "poradi": 124,
   "skryto": false
  },
  {
@@ -346,7 +360,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 124,
+  "poradi": 125,
   "skryto": false
  },
  {
@@ -360,7 +374,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 125,
+  "poradi": 126,
   "skryto": false
  },
  {
@@ -374,7 +388,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 126,
+  "poradi": 127,
   "skryto": false
  },
  {
@@ -388,7 +402,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 127,
+  "poradi": 128,
   "skryto": false
  },
  {
@@ -402,7 +416,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 128,
+  "poradi": 129,
   "skryto": false
  },
  {
@@ -416,7 +430,49 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 129,
+  "poradi": 130,
+  "skryto": false
+ },
+ {
+  "id": "g-i002-18",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "18",
+  "mistnost": "",
+  "bod": "ELE: Napojení klimy do rozvaděče",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 131,
+  "skryto": false
+ },
+ {
+  "id": "g-i005-18",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "18",
+  "mistnost": "",
+  "bod": "ZTI: Zkontrolovat střed přívodu/odpadu vaničky",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 132,
+  "skryto": false
+ },
+ {
+  "id": "g-i006-18",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "18",
+  "mistnost": "",
+  "bod": "Protipožární ucpávka na každou trubku, lepit protipožární pásku",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 133,
   "skryto": false
  },
  {
@@ -430,7 +486,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 130,
+  "poradi": 134,
   "skryto": false
  },
  {
@@ -444,7 +500,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 131,
+  "poradi": 135,
   "skryto": false
  },
  {
@@ -458,7 +514,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 132,
+  "poradi": 136,
   "skryto": false
  },
  {
@@ -472,7 +528,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 133,
+  "poradi": 137,
   "skryto": false
  },
  {
@@ -486,7 +542,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 134,
+  "poradi": 138,
   "skryto": false
  },
  {
@@ -500,7 +556,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 135,
+  "poradi": 139,
   "skryto": false
  },
  {
@@ -514,7 +570,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 136,
+  "poradi": 140,
   "skryto": false
  },
  {
@@ -528,7 +584,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 137,
+  "poradi": 141,
   "skryto": false
  },
  {
@@ -542,7 +598,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 138,
+  "poradi": 142,
   "skryto": false
  },
  {
@@ -556,7 +612,35 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 139,
+  "poradi": 143,
+  "skryto": false
+ },
+ {
+  "id": "g-i002-19",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "19",
+  "mistnost": "",
+  "bod": "ELE: Napojení klimy do rozvaděče",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 144,
+  "skryto": false
+ },
+ {
+  "id": "g-i006-19",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "19",
+  "mistnost": "",
+  "bod": "Protipožární ucpávka na každou trubku, lepit protipožární pásku",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 145,
   "skryto": false
  },
  {
@@ -570,7 +654,91 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 140,
+  "poradi": 146,
+  "skryto": false
+ },
+ {
+  "id": "g-i001-20",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "20",
+  "mistnost": "",
+  "bod": "ZTI: Rozvod vody",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 147,
+  "skryto": false
+ },
+ {
+  "id": "g-i002-20",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "20",
+  "mistnost": "",
+  "bod": "ELE: Napojení klimy do rozvaděče",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 148,
+  "skryto": false
+ },
+ {
+  "id": "g-i003-20",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "20",
+  "mistnost": "",
+  "bod": "ELE: Uzemnění: žlutozelený kabel do hlavního rozvaděče bytu",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 149,
+  "skryto": false
+ },
+ {
+  "id": "g-i004-20",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "20",
+  "mistnost": "",
+  "bod": "ELE: Domofon, data a anténa",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 150,
+  "skryto": false
+ },
+ {
+  "id": "g-i005-20",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "20",
+  "mistnost": "",
+  "bod": "ZTI: Zkontrolovat střed přívodu/odpadu vaničky",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 151,
+  "skryto": false
+ },
+ {
+  "id": "g-i006-20",
+  "sekce": "nedodelky",
+  "podlazi": "2. NP",
+  "byt": "20",
+  "mistnost": "",
+  "bod": "Protipožární ucpávka na každou trubku, lepit protipožární pásku",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 152,
   "skryto": false
  },
  {
@@ -584,7 +752,119 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 141,
+  "poradi": 153,
+  "skryto": false
+ },
+ {
+  "id": "g-i001-25",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "25",
+  "mistnost": "",
+  "bod": "ZTI: Rozvod vody",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 154,
+  "skryto": false
+ },
+ {
+  "id": "g-i002-25",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "25",
+  "mistnost": "",
+  "bod": "ELE: Napojení klimy do rozvaděče",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 155,
+  "skryto": false
+ },
+ {
+  "id": "g-i003-25",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "25",
+  "mistnost": "",
+  "bod": "ELE: Uzemnění: žlutozelený kabel do hlavního rozvaděče bytu",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 156,
+  "skryto": false
+ },
+ {
+  "id": "g-i004-25",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "25",
+  "mistnost": "",
+  "bod": "ELE: Domofon, data a anténa",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 157,
+  "skryto": false
+ },
+ {
+  "id": "g-i005-25",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "25",
+  "mistnost": "",
+  "bod": "ZTI: Zkontrolovat střed přívodu/odpadu vaničky",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 158,
+  "skryto": false
+ },
+ {
+  "id": "g-i006-25",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "25",
+  "mistnost": "",
+  "bod": "Protipožární ucpávka na každou trubku, lepit protipožární pásku",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 159,
+  "skryto": false
+ },
+ {
+  "id": "g-i007-25",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "25",
+  "mistnost": "",
+  "bod": "Akustické stěny mezi byty: ještě zajistit akustiku mezi byty",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 160,
+  "skryto": false
+ },
+ {
+  "id": "g-np3-vyska-koupelen-25",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "25",
+  "mistnost": "",
+  "bod": "Výška koupelen ve 3. NP: 2,40 m čistá a PBŘ strop na 3m",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 161,
   "skryto": false
  },
  {
@@ -598,7 +878,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 142,
+  "poradi": 162,
   "skryto": false
  },
  {
@@ -612,7 +892,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 143,
+  "poradi": 163,
   "skryto": false
  },
  {
@@ -626,7 +906,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 144,
+  "poradi": 164,
   "skryto": false
  },
  {
@@ -640,7 +920,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 145,
+  "poradi": 165,
   "skryto": false
  },
  {
@@ -654,7 +934,91 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 146,
+  "poradi": 166,
+  "skryto": false
+ },
+ {
+  "id": "g-i001-30",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "30",
+  "mistnost": "",
+  "bod": "ZTI: Rozvod vody",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 167,
+  "skryto": false
+ },
+ {
+  "id": "g-i002-30",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "30",
+  "mistnost": "",
+  "bod": "ELE: Napojení klimy do rozvaděče",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 168,
+  "skryto": false
+ },
+ {
+  "id": "g-i003-30",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "30",
+  "mistnost": "",
+  "bod": "ELE: Uzemnění: žlutozelený kabel do hlavního rozvaděče bytu",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 169,
+  "skryto": false
+ },
+ {
+  "id": "g-i004-30",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "30",
+  "mistnost": "",
+  "bod": "ELE: Domofon, data a anténa",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 170,
+  "skryto": false
+ },
+ {
+  "id": "g-i005-30",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "30",
+  "mistnost": "",
+  "bod": "ZTI: Zkontrolovat střed přívodu/odpadu vaničky",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 171,
+  "skryto": false
+ },
+ {
+  "id": "g-i006-30",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "30",
+  "mistnost": "",
+  "bod": "Protipožární ucpávka na každou trubku, lepit protipožární pásku",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 172,
   "skryto": false
  },
  {
@@ -668,7 +1032,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 147,
+  "poradi": 173,
   "skryto": false
  },
  {
@@ -682,7 +1046,7 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 148,
+  "poradi": 174,
   "skryto": false
  },
  {
@@ -696,7 +1060,105 @@
   "uzavrel": null,
   "uzavreno_at": null,
   "poznamka": null,
-  "poradi": 149,
+  "poradi": 175,
+  "skryto": false
+ },
+ {
+  "id": "g-i001-32",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "32",
+  "mistnost": "",
+  "bod": "ZTI: Rozvod vody",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 176,
+  "skryto": false
+ },
+ {
+  "id": "g-i002-32",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "32",
+  "mistnost": "",
+  "bod": "ELE: Napojení klimy do rozvaděče",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 177,
+  "skryto": false
+ },
+ {
+  "id": "g-i003-32",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "32",
+  "mistnost": "",
+  "bod": "ELE: Uzemnění: žlutozelený kabel do hlavního rozvaděče bytu",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 178,
+  "skryto": false
+ },
+ {
+  "id": "g-i004-32",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "32",
+  "mistnost": "",
+  "bod": "ELE: Domofon, data a anténa",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 179,
+  "skryto": false
+ },
+ {
+  "id": "g-i005-32",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "32",
+  "mistnost": "",
+  "bod": "ZTI: Zkontrolovat střed přívodu/odpadu vaničky",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 180,
+  "skryto": false
+ },
+ {
+  "id": "g-i006-32",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "32",
+  "mistnost": "",
+  "bod": "Protipožární ucpávka na každou trubku, lepit protipožární pásku",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 181,
+  "skryto": false
+ },
+ {
+  "id": "g-np3-vyska-koupelen-32",
+  "sekce": "nedodelky",
+  "podlazi": "3. NP",
+  "byt": "32",
+  "mistnost": "",
+  "bod": "Výška koupelen ve 3. NP: 2,40 m čistá a PBŘ strop na 3m",
+  "hotovo": false,
+  "uzavrel": null,
+  "uzavreno_at": null,
+  "poznamka": null,
+  "poradi": 182,
   "skryto": false
  },
  {
