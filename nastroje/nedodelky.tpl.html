@@ -1,0 +1,518 @@
+<title>Nedodělky po bytech - Nehvizdy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  color-scheme:light;
+  --paper:#f6f5f0; --card:#fff; --card2:#fbfaf6;
+  --ink:#16150f; --ink2:#46423a; --muted:#6e6a5f;
+  --line:#e2dfd4; --line2:#cfcbbd;
+  --blueprint:#1d3f63; --signal:#c2410c;
+  --hotovo:#0d6b45; --hotovo-bg:#e3f3ec;
+  --trva:#9a6a0c; --trva-bg:#fbf1dc;
+  --pozde:#b3261e;
+  --r:10px; --shadow:0 1px 2px rgba(20,18,10,.05),0 6px 18px rgba(20,18,10,.045);
+}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:15px/1.5 Barlow,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 120px}
+
+.top{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 94%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topin{max-width:1080px;margin:0 auto;padding:11px 20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.eyebrow{font-family:Archivo,sans-serif;font-weight:700;font-size:11px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--blueprint)}
+.eyebrow span{color:var(--muted);font-weight:500}
+.topright{margin-left:auto;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.sig,.btn{font-family:Archivo,sans-serif;font-size:12px;font-weight:600;color:var(--ink2);
+  border:1px solid var(--line2);background:var(--card);border-radius:99px;padding:5px 11px;cursor:pointer}
+.sig:hover,.btn:hover{border-color:var(--blueprint)}
+.sig small{color:var(--muted);font-weight:500}
+.conn{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--muted);white-space:nowrap}
+.conn b{color:var(--hotovo);font-weight:700} .conn i{color:var(--trva);font-style:normal;font-weight:700}
+
+h1{font-family:Archivo,sans-serif;font-weight:700;font-size:clamp(24px,4vw,34px);
+  line-height:1.1;letter-spacing:-.02em;margin:28px 0 8px}
+.dek{color:var(--ink2);font-size:16px;max-width:66ch;margin:0}
+.banner{margin-top:16px;padding:12px 15px;border-left:3px solid var(--trva);background:var(--trva-bg);
+  border-radius:0 7px 7px 0;font-size:14.5px}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:22px 0 0}
+.tab{font-family:Archivo,sans-serif;font-weight:600;font-size:13px;padding:7px 13px;border-radius:99px;
+  border:1px solid var(--line2);background:var(--card);color:var(--ink2);cursor:pointer;
+  display:inline-flex;align-items:center;gap:7px}
+.tab[aria-selected="true"]{background:var(--blueprint);border-color:var(--blueprint);color:#fff}
+.tab .n{font-family:"JetBrains Mono",monospace;font-size:10.5px;opacity:.72;font-weight:400}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:16px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.kpi .lab{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:13px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--muted)}
+.kpi .val{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:25px;line-height:1.1;margin-top:2px}
+.kpi.k-hot .val{color:var(--hotovo)} .kpi.k-otev .val{color:var(--signal)}
+
+.filters{display:flex;flex-direction:column;gap:11px;margin-top:16px;padding:14px 16px;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+.fgroup{display:grid;grid-template-columns:92px 1fr;gap:4px 14px;align-items:baseline}
+@media (max-width:560px){.fgroup{grid-template-columns:1fr}}
+.fgroup h3{margin:0;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:14px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.fchips{display:flex;gap:5px;flex-wrap:wrap}
+.chip{font-family:Archivo,sans-serif;font-weight:600;font-size:12px;padding:4.5px 10px;border-radius:99px;
+  border:1px solid var(--line2);background:transparent;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+
+h2{font-family:Archivo,sans-serif;font-weight:700;font-size:15px;letter-spacing:.02em;
+  text-transform:uppercase;margin:30px 0 10px;display:flex;align-items:center;gap:10px}
+h2::after{content:"";flex:1;height:1px;background:var(--line)}
+
+.grp{margin-top:14px;border:1px solid var(--line2);border-radius:8px;overflow:hidden;
+  background:linear-gradient(180deg,#fffefb 0%,#f8f6ef 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 1px 2px rgba(40,34,18,.07),0 3px 9px rgba(40,34,18,.05)}
+.ghead{display:flex;align-items:center;gap:12px;width:100%;padding:12px 15px;background:none;
+  border:0;text-align:left;cursor:pointer;font:inherit;color:var(--ink)}
+.ghead:hover{background:rgba(255,255,255,.55)}
+.gbyt{font-family:Archivo,sans-serif;font-weight:700;font-size:17px}
+.gpod{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted)}
+.gpoc{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--muted)}
+.gpoc b{color:var(--hotovo)}
+.gcaret{color:var(--muted);font-size:12px;transition:transform .16s ease}
+.grp[data-open="true"] .gcaret{transform:rotate(90deg)}
+.gbody{display:none;background:var(--card);border-top:1px solid var(--line)}
+.grp[data-open="true"] .gbody{display:block}
+
+.row{display:grid;grid-template-columns:30px 1fr;gap:0 12px;padding:12px 15px;
+  border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row.hot{background:var(--hotovo-bg)}
+.row.hot .txt{text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--hotovo) 45%,transparent)}
+.chk{width:22px;height:22px;margin-top:1px;accent-color:var(--hotovo);cursor:pointer}
+.chk:disabled{cursor:not-allowed;opacity:.45}
+.txt{font-size:15.5px;line-height:1.5}
+.mist{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--muted);display:block;margin-bottom:3px}
+.meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:7px;
+  font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted)}
+.meta b{color:var(--hotovo);font-weight:700}
+.pozn{margin-top:8px}
+.pozn textarea{font:inherit;font-size:14px;color:var(--ink);background:var(--card2);
+  border:1px solid var(--line2);border-radius:5px;padding:7px 9px;width:100%;resize:vertical;min-height:38px}
+.pozn textarea:disabled{opacity:.6;background:transparent;border-style:dashed}
+.pozn textarea:focus{outline:2px solid var(--blueprint);outline-offset:-1px}
+.plab{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:12px;letter-spacing:.11em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:3px}
+.save{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:12px;letter-spacing:.07em;
+  text-transform:uppercase;min-height:14px;margin-top:4px}
+.save.ok{color:var(--hotovo)} .save.err{color:var(--pozde)} .save.busy{color:var(--trva)}
+.rowbtns{display:flex;gap:7px;margin-top:8px;flex-wrap:wrap}
+.mini{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.07em;
+  text-transform:uppercase;background:none;border:0;color:var(--blueprint);cursor:pointer;padding:2px 5px;border-radius:3px}
+.mini:hover{background:var(--card2)}
+.mini.dan{color:var(--pozde)}
+.row > div > .mini{margin-top:6px}
+.txt input[type="text"]{font:inherit;font-size:15.5px;width:100%;border:1px solid var(--blueprint);
+  border-radius:5px;padding:6px 8px;background:var(--card)}
+
+.pridat{padding:12px 15px;background:var(--card2);border-top:1px solid var(--line);
+  display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pridat input{font:inherit;font-size:14.5px;border:1px solid var(--line2);border-radius:5px;
+  padding:7px 9px;background:var(--card)}
+.pridat input.bod{flex:1;min-width:220px}
+.pridat input.mis{width:150px}
+.btn.primary{background:var(--blueprint);border-color:var(--blueprint);color:#fff;border-radius:5px}
+.prazdne{padding:22px 15px;color:var(--muted);font-style:italic;text-align:center}
+
+.newver{position:fixed;left:0;right:0;bottom:0;z-index:90;display:none;align-items:center;gap:14px;
+  justify-content:center;padding:11px 16px calc(11px + env(safe-area-inset-bottom,0px));
+  background:var(--ink);color:var(--paper);font-size:14.5px;box-shadow:0 -2px 14px rgba(20,18,10,.2)}
+.newver[data-on="true"]{display:flex}
+.newver button{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:14px;letter-spacing:.07em;
+  text-transform:uppercase;background:var(--paper);color:var(--ink);border:0;border-radius:4px;
+  padding:6px 15px;cursor:pointer}
+
+.mask{position:fixed;inset:0;background:rgba(15,16,14,.5);display:none;align-items:center;
+  justify-content:center;padding:20px;z-index:80}
+.mask[data-on="true"]{display:flex}
+.modal{background:var(--card);border:1px solid var(--line2);border-radius:8px;padding:22px;max-width:430px;width:100%}
+.modal h4{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:23px;letter-spacing:.02em;
+  text-transform:uppercase;margin:0 0 6px}
+.modal p{margin:0 0 14px;font-size:15px;color:var(--ink2)}
+.who-opts{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.modal input{font:inherit;font-size:15px;border:1px solid var(--line2);border-radius:5px;
+  padding:8px 10px;width:100%;background:var(--card)}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.foot{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-size:14px;color:var(--ink2);
+  display:flex;gap:20px;flex-wrap:wrap;justify-content:space-between}
+.foot .mono{font-family:"JetBrains Mono",monospace;color:var(--muted);font-size:12px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:95;
+  background:var(--ink);color:var(--paper);font-family:"JetBrains Mono",monospace;font-size:13px;
+  font-weight:600;padding:10px 16px;border-radius:6px;display:none}
+.toast[data-on="true"]{display:block}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="topin">
+    <span class="eyebrow">Henderson Group <span>· BD Pod hvězdami Nehvizdy</span></span>
+    <span class="topright">
+      <a class="sig" href="../" style="text-decoration:none">Kontrolní dny</a>
+      <span class="conn" id="conn"></span>
+      <button class="sig" id="lockBtn" type="button"></button>
+      <button class="sig" id="sigBtn" type="button"></button>
+    </span>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Nedodělky po bytech</h1>
+  <p class="dek">Seznam z obchůzky __OBCHUZKA__. Bod odbavíte zaškrtnutím, jméno a datum se doplní samy.
+    Pod každým bodem je místo na poznámku. Změny vidí všichni ostatní hned.</p>
+  <div id="banner"></div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="kpis"></div>
+  <div id="filters"></div>
+  <div id="seznam"></div>
+
+  <div class="foot">
+    <span>Seznam je živý. Kdo má kód, může zapisovat; ostatní jen čtou.</span>
+    <span class="mono">BD Nehvizdy · k.ú. Nehvizdy · parc. č. 92/62</span>
+  </div>
+</div>
+
+<div class="newver" id="newver" data-on="false">
+  <span>Je k dispozici novější verze stránky.</span>
+  <button type="button" id="newverBtn">Načíst</button>
+</div>
+<div class="toast" id="toast" data-on="false"></div>
+
+<div class="mask" id="mask" data-on="false">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+const BUILD = "__BUILD__";
+const SUPA_URL = "__SUPA_URL__";
+const SUPA_KEY = "__SUPA_KEY__";
+const OBCHUZKA = "__OBCHUZKA__";
+const BASE = __BASE__;
+
+const LIDE = ["Marina","pan Zeman","pan Kret","pan Kuchař","S. Zavodnov","P. Jelínek","vlastní parta"];
+const esc = s => String(s??"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const dnes = () => new Date().toISOString().slice(0,10);
+const cz = iso => { if(!iso) return ""; const d=String(iso).slice(0,10).split("-"); return `${+d[2]}. ${+d[1]}. ${d[0]}`; };
+
+let editToken=null, me=null, isOwner=false, dbReady=false, sb=null;
+try{ editToken = localStorage.getItem("kd-token") || null; }catch(e){}
+try{ me = localStorage.getItem("kd-podpis") || null; }catch(e){}
+
+let ui = {tab:"nedodelky", podlazi:"all", byt:"all", stav:"otevrene", otevrene:{}};
+try{ const s=JSON.parse(localStorage.getItem("ned-ui")||"null"); if(s&&typeof s==="object") ui=Object.assign(ui,s); }catch(e){}
+const saveUi = () => { try{ localStorage.setItem("ned-ui", JSON.stringify(ui)); }catch(e){} };
+
+const data = new Map(BASE.map(r => [r.id, {...r}]));
+
+function hlavicky(){
+  const h = {apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY, "Content-Type":"application/json"};
+  if(editToken) h["x-edit-token"] = editToken;
+  return h;
+}
+async function rest(path, opt={}){
+  const r = await fetch(SUPA_URL+"/rest/v1/"+path, {...opt, headers:{...hlavicky(), ...(opt.headers||{})}});
+  const t = await r.text();
+  if(!r.ok) throw new Error(r.status+" "+t.slice(0,200));
+  return t ? JSON.parse(t) : null;
+}
+function toast(txt){
+  const t=document.getElementById("toast"); t.textContent=txt; t.dataset.on="true";
+  clearTimeout(t._t); t._t=setTimeout(()=>t.dataset.on="false", 2600);
+}
+
+async function nactiVse(){
+  try{
+    const rows = await rest("nedodelky?select=*&order=poradi");
+    data.clear(); rows.forEach(r=>data.set(r.id, r));
+    dbReady = true;
+  }catch(e){ dbReady = false; }
+  await overToken();
+  render();
+}
+async function overToken(){
+  isOwner = false;
+  if(!editToken || !dbReady) return;
+  try{
+    const r = await rest("rpc/muze_psat", {method:"POST", body:"{}"});
+    isOwner = r === true;
+    if(!isOwner){ editToken=null; try{localStorage.removeItem("kd-token");}catch(e){} toast("Kód pro úpravy neplatí."); }
+  }catch(e){ isOwner = false; }
+}
+function realtime(){
+  if(!window.supabase || !dbReady) return;
+  sb = window.supabase.createClient(SUPA_URL, SUPA_KEY, {global:{headers: editToken?{"x-edit-token":editToken}:{}}});
+  sb.channel("ned").on("postgres_changes", {event:"*", schema:"public", table:"nedodelky"}, p=>{
+    if(p.eventType === "DELETE") data.delete(p.old.id); else data.set(p.new.id, p.new);
+    render();
+  }).subscribe();
+}
+
+function hlaska(id, tr, cls){
+  const el = document.querySelector(`.save[data-id="${CSS.escape(id)}"]`);
+  if(!el) return; el.className = "save "+(cls||""); el.textContent = tr||"";
+}
+async function uloz(id, patch, akce){
+  if(!isOwner) return;
+  const r = data.get(id); if(!r) return;
+  const puvodni = {...r};
+  Object.assign(r, patch); render();
+  hlaska(id, "ukládám", "busy");
+  try{
+    await rest("nedodelky?id=eq."+encodeURIComponent(id), {method:"PATCH",
+      body: JSON.stringify({...patch, updated_at:new Date().toISOString()})});
+    if(akce) await rest("nedodelky_historie", {method:"POST",
+      body: JSON.stringify([{bod_id:id, akce:akce.akce, z:akce.z, na:akce.na, kdo:me||"neznámý"}])}).catch(()=>{});
+    hlaska(id, "uloženo", "ok");
+    setTimeout(()=>hlaska(id,"",""), 2200);
+  }catch(e){
+    data.set(id, puvodni); render();
+    hlaska(id, "neuloženo", "err");
+  }
+}
+
+function prepniHotovo(id, zaskrtnuto){
+  if(!me){ openWho(()=>prepniHotovo(id, zaskrtnuto)); return; }
+  uloz(id, zaskrtnuto
+      ? {hotovo:true, uzavrel:me, uzavreno_at:dnes()}
+      : {hotovo:false, uzavrel:null, uzavreno_at:null},
+    {akce:"hotovo", z: zaskrtnuto?"otevřeno":"hotovo", na: zaskrtnuto?"hotovo":"otevřeno"});
+}
+
+let upravuji = new Set();
+let poznOtevrene = new Set();
+async function pridej(byt, podlazi, mistnost, bod){
+  if(!isOwner || !bod.trim()) return;
+  const sekce = ui.tab;
+  const max = Math.max(0, ...[...data.values()].filter(r=>r.sekce===sekce).map(r=>r.poradi||0));
+  const id = sekce.slice(0,3)+"-"+Date.now().toString(36);
+  const row = {id, sekce, podlazi, byt, mistnost:mistnost.trim(), bod:bod.trim(),
+    hotovo:false, uzavrel:null, uzavreno_at:null, poznamka:null, poradi:max+1, skryto:false};
+  try{
+    await rest("nedodelky", {method:"POST", body: JSON.stringify([row])});
+    data.set(id, row); render(); toast("Bod přidán.");
+  }catch(e){ toast("Bod se nepodařilo přidat."); }
+}
+async function smaz(id){
+  if(!isOwner) return;
+  if(!confirm("Opravdu smazat tento bod?")) return;
+  try{ await rest("nedodelky?id=eq."+encodeURIComponent(id), {method:"DELETE"});
+    data.delete(id); render(); toast("Bod smazán."); }catch(e){ toast("Nepodařilo se smazat."); }
+}
+
+const zive = () => [...data.values()].filter(r=>!r.skryto && r.sekce===ui.tab);
+function vFiltru(r){
+  return (ui.podlazi==="all" || r.podlazi===ui.podlazi)
+      && (ui.byt==="all" || r.byt===ui.byt)
+      && (ui.stav==="all" || (ui.stav==="hotove" ? r.hotovo : !r.hotovo));
+}
+
+function render(){
+  const vse = [...data.values()].filter(r=>!r.skryto);
+  const ned = vse.filter(r=>r.sekce==="nedodelky"), otz = vse.filter(r=>r.sekce==="otazky");
+  document.getElementById("tabs").innerHTML =
+    [["nedodelky","Nedodělky",ned],["otazky","Otevřené otázky",otz]].map(([k,l,a])=>
+      `<button class="tab" role="tab" aria-selected="${ui.tab===k}" data-tab="${k}">${l}
+        <span class="n">${a.filter(r=>!r.hotovo).length} / ${a.length}</span></button>`).join("");
+
+  const c = document.getElementById("conn");
+  c.innerHTML = dbReady ? (isOwner ? `<b>živé</b> · úpravy odemčeny` : `<b>živé</b>`) : `<i>offline</i>`;
+  document.getElementById("lockBtn").innerHTML = isOwner ? `<small>zamknout</small> úpravy` : `<small>odemknout</small> úpravy`;
+  const sg = document.getElementById("sigBtn");
+  sg.innerHTML = me ? `<small>podepsáno jako</small> ${esc(me)}` : `podepsat se`;
+
+  document.getElementById("banner").innerHTML = dbReady
+    ? (isOwner ? "" : `<div class="banner">Seznam je živý a aktualizuje se sám. Zápis je zamčený kódem, bez něj jen čtete.</div>`)
+    : `<div class="banner">Data se nepodařilo načíst, vidíte poslední známý stav. Zkuste stránku načíst znovu.</div>`;
+
+  const sc = zive();
+  const hot = sc.filter(r=>r.hotovo).length;
+  document.getElementById("kpis").innerHTML = `<div class="kpis">
+    <div class="kpi"><div class="lab">Bodů</div><div class="val">${sc.length}</div></div>
+    <div class="kpi k-otev"><div class="lab">Otevřené</div><div class="val">${sc.length-hot}</div></div>
+    <div class="kpi k-hot"><div class="lab">Hotové</div><div class="val">${hot}</div></div>
+    <div class="kpi"><div class="lab">Bytů</div><div class="val">${new Set(sc.map(r=>r.byt)).size}</div></div>
+  </div>`;
+
+  const pod = [...new Set(sc.map(r=>r.podlazi))];
+  const byty = [...new Set(sc.filter(r=>ui.podlazi==="all"||r.podlazi===ui.podlazi).map(r=>r.byt))];
+  const ch = (f, vals, popisky) => [`<button class="chip" aria-pressed="${ui[f]==="all"}" data-f="${f}" data-v="all">Vše</button>`]
+    .concat(vals.map(v=>`<button class="chip" aria-pressed="${ui[f]===v}" data-f="${f}" data-v="${esc(v)}">${esc((popisky||{})[v]||v)}</button>`)).join("");
+  document.getElementById("filters").innerHTML = `<div class="filters">
+    <div class="fgroup"><h3>Podlaží</h3><div class="fchips">${ch("podlazi", pod)}</div></div>
+    <div class="fgroup"><h3>Byt</h3><div class="fchips">${ch("byt", byty)}</div></div>
+    <div class="fgroup"><h3>Stav</h3><div class="fchips">
+      <button class="chip" aria-pressed="${ui.stav==="all"}" data-f="stav" data-v="all">Vše</button>
+      <button class="chip" aria-pressed="${ui.stav==="otevrene"}" data-f="stav" data-v="otevrene">Otevřené</button>
+      <button class="chip" aria-pressed="${ui.stav==="hotove"}" data-f="stav" data-v="hotove">Hotové</button>
+    </div></div></div>`;
+
+  const vybrane = sc.filter(vFiltru);
+  const skupiny = [];
+  sc.forEach(r=>{ let g = skupiny.find(x=>x.byt===r.byt);
+    if(!g){ g={byt:r.byt, podlazi:r.podlazi, vse:[], zobrazene:[]}; skupiny.push(g); }
+    g.vse.push(r); if(vybrane.includes(r)) g.zobrazene.push(r); });
+
+  const html = skupiny.filter(g=>g.zobrazene.length).map(g=>{
+    const hotG = g.vse.filter(r=>r.hotovo).length;
+    const open = ui.otevrene[ui.tab+"|"+g.byt] !== false;
+    return `<section class="grp" data-open="${open}" data-byt="${esc(g.byt)}">
+      <button class="ghead" data-act="grp" data-byt="${esc(g.byt)}">
+        <span><span class="gbyt">${/^\d+$/.test(g.byt) ? "Byt " + esc(g.byt) : esc(g.byt)}</span>
+          <span class="gpod"> &nbsp;${esc(g.podlazi)}</span></span>
+        <span class="gpoc"><b>${hotG}</b> z ${g.vse.length} hotovo</span>
+        <span class="gcaret">&#9656;</span>
+      </button>
+      <div class="gbody">
+        ${g.zobrazene.map(r=>radek(r)).join("")}
+        ${isOwner?`<div class="pridat" data-byt="${esc(g.byt)}" data-pod="${esc(g.podlazi)}">
+          <input class="mis" type="text" placeholder="Místnost (nepovinné)">
+          <input class="bod" type="text" placeholder="Nový bod">
+          <button class="btn primary" data-act="pridat" data-byt="${esc(g.byt)}">Přidat</button>
+        </div>`:""}
+      </div></section>`;
+  }).join("");
+  document.getElementById("seznam").innerHTML = html || `<div class="grp"><div class="prazdne">Pro zvolený filtr tu nic není.</div></div>`;
+}
+
+function radek(r){
+  const upr = upravuji.has(r.id);
+  return `<div class="row ${r.hotovo?"hot":""}">
+    <input class="chk" type="checkbox" ${r.hotovo?"checked":""} ${isOwner?"":"disabled"}
+      data-act="hotovo" data-id="${esc(r.id)}" aria-label="Hotovo">
+    <div>
+      <div class="txt">
+        ${r.mistnost?`<span class="mist">${esc(r.mistnost)}</span>`:""}
+        ${upr ? `<input type="text" data-act="bodTxt" data-id="${esc(r.id)}" value="${esc(r.bod)}">`
+              : esc(r.bod)}
+      </div>
+      <div class="meta">
+        ${r.hotovo ? `<span><b>hotovo</b> ${esc(r.uzavrel||"")}${r.uzavreno_at?" · "+cz(r.uzavreno_at):""}</span>` : `<span>otevřeno</span>`}
+      </div>
+      ${(r.poznamka || poznOtevrene.has(r.id)) ? `<div class="pozn">
+        <span class="plab">Poznámka</span>
+        <textarea data-act="pozn" data-id="${esc(r.id)}" ${isOwner?"":"disabled"}
+          placeholder="${isOwner?"Zapište poznámku k bodu":"Bez poznámky"}">${esc(r.poznamka||"")}</textarea>
+      </div>` : (isOwner?`<button class="mini" data-act="poznPlus" data-id="${esc(r.id)}">+ poznámka</button>`:"")}
+      <div class="save" data-id="${esc(r.id)}"></div>
+      ${isOwner?`<div class="rowbtns">
+        <button class="mini" data-act="uprav" data-id="${esc(r.id)}">${upr?"Hotovo s textem":"Upravit text"}</button>
+        <button class="mini dan" data-act="smaz" data-id="${esc(r.id)}">Smazat</button>
+      </div>`:""}
+    </div></div>`;
+}
+
+/* ---------- podpis a kód ---------- */
+function openWho(potom){
+  const m = document.getElementById("modal");
+  m.innerHTML = `<h4>Kdo jste?</h4>
+    <p>Jméno se připojí k odbaveným bodům, aby bylo vidět, kdo co uzavřel. Je to podpis, ne přihlášení.</p>
+    <div class="who-opts">${LIDE.map(l=>`<button class="chip" data-who="${esc(l)}">${esc(l)}</button>`).join("")}</div>
+    <input type="text" id="whoJine" placeholder="nebo napište jméno" value="${esc(me||"")}">
+    <div class="btnrow"><button class="btn primary" id="whoOk">Uložit</button>
+      <button class="btn" data-act="zavri">Zpět</button></div>`;
+  document.getElementById("mask").dataset.on = "true";
+  m.querySelectorAll("[data-who]").forEach(b=>b.addEventListener("click",()=>{
+    document.getElementById("whoJine").value = b.dataset.who; }));
+  document.getElementById("whoOk").addEventListener("click", ()=>{
+    const v = document.getElementById("whoJine").value.trim();
+    if(!v) return;
+    me = v; try{ localStorage.setItem("kd-podpis", v); }catch(e){}
+    document.getElementById("mask").dataset.on = "false"; render();
+    if(typeof potom === "function") potom();
+  });
+}
+function openKod(){
+  const m = document.getElementById("modal");
+  m.innerHTML = `<h4>Kód pro úpravy</h4>
+    <p>Bez kódu seznam jen čtete. S kódem můžete odbavovat body, psát poznámky a přidávat nové.</p>
+    <input type="text" id="kodVstup" placeholder="kód" autocomplete="off">
+    <div class="btnrow"><button class="btn primary" id="kodOk">Odemknout</button>
+      <button class="btn" data-act="zavri">Zpět</button></div>`;
+  document.getElementById("mask").dataset.on = "true";
+  document.getElementById("kodOk").addEventListener("click", async ()=>{
+    const v = document.getElementById("kodVstup").value.trim();
+    if(!v) return;
+    editToken = v; try{ localStorage.setItem("kd-token", v); }catch(e){}
+    await overToken();
+    if(isOwner){ toast("Úpravy odemčeny."); document.getElementById("mask").dataset.on="false"; }
+    render();
+  });
+}
+
+/* ---------- události ---------- */
+document.addEventListener("click", (e)=>{
+  const tab = e.target.closest(".tab[data-tab]");
+  if(tab){ ui.tab = tab.dataset.tab; ui.byt="all"; ui.podlazi="all"; saveUi(); render(); return; }
+  const chip = e.target.closest(".chip[data-f]");
+  if(chip){ ui[chip.dataset.f] = chip.dataset.v; if(chip.dataset.f==="podlazi") ui.byt="all"; saveUi(); render(); return; }
+  const el = e.target.closest("[data-act]");
+  if(!el) return;
+  const act = el.dataset.act, id = el.dataset.id;
+  if(act==="zavri"){ document.getElementById("mask").dataset.on="false"; return; }
+  if(act==="grp"){
+    const k = ui.tab+"|"+el.dataset.byt;
+    ui.otevrene[k] = ui.otevrene[k] === false; saveUi(); render(); return;
+  }
+  if(act==="hotovo"){ prepniHotovo(id, el.checked); return; }
+  if(act==="poznPlus"){ poznOtevrene.add(id); render();
+    const t=document.querySelector(`textarea[data-id="${CSS.escape(id)}"]`); if(t) t.focus(); return; }
+  if(act==="uprav"){
+    if(upravuji.has(id)) upravuji.delete(id); else upravuji.add(id);
+    render(); return;
+  }
+  if(act==="smaz"){ smaz(id); return; }
+  if(act==="pridat"){
+    const box = el.closest(".pridat");
+    const bod = box.querySelector(".bod").value, mis = box.querySelector(".mis").value;
+    pridej(box.dataset.byt, box.dataset.pod, mis, bod);
+    box.querySelector(".bod").value=""; box.querySelector(".mis").value=""; return;
+  }
+});
+let casovac = null;
+document.addEventListener("input", (e)=>{
+  const el = e.target.closest("[data-act]"); if(!el) return;
+  const act = el.dataset.act, id = el.dataset.id;
+  if(act!=="pozn" && act!=="bodTxt") return;
+  clearTimeout(casovac);
+  const pole = act==="pozn" ? "poznamka" : "bod";
+  const hodnota = el.value;
+  casovac = setTimeout(()=> uloz(id, {[pole]: hodnota}), 700);
+});
+document.getElementById("sigBtn").addEventListener("click", ()=>openWho());
+document.getElementById("lockBtn").addEventListener("click", ()=>{
+  if(isOwner){ editToken=null; isOwner=false; try{localStorage.removeItem("kd-token");}catch(e){}
+    toast("Úpravy zamčeny."); render(); } else openKod();
+});
+document.getElementById("mask").addEventListener("click", e=>{
+  if(e.target.id === "mask") document.getElementById("mask").dataset.on = "false"; });
+
+/* ---------- hlídá novou verzi stránky ---------- */
+(function(){
+  const box = document.getElementById("newver"), btn = document.getElementById("newverBtn");
+  btn.addEventListener("click", ()=>{ location.replace(location.pathname + "?v=" + Date.now()); });
+  async function zkus(){
+    try{
+      const r = await fetch(location.pathname + "?v=" + Date.now(), {cache:"no-store"});
+      if(!r.ok) return;
+      const m = /const BUILD = "(\d+)"/.exec(await r.text());
+      if(m && m[1] > BUILD) box.dataset.on = "true";
+    }catch(e){}
+  }
+  zkus(); setInterval(zkus, 120000);
+  document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) zkus(); });
+})();
+
+render();
+nactiVse().then(realtime);
+</script>
