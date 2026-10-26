@@ -269,7 +269,14 @@ function realtime(){
   if(!window.supabase || !dbReady) return;
   sb = window.supabase.createClient(SUPA_URL, SUPA_KEY, {global:{headers: editToken?{"x-edit-token":editToken}:{}}});
   sb.channel("ned").on("postgres_changes", {event:"*", schema:"public", table:"nedodelky"}, p=>{
-    if(p.eventType === "DELETE") data.delete(p.old.id); else data.set(p.new.id, p.new);
+    const akt = document.activeElement;
+    const pisu = akt && akt.dataset && akt.dataset.id;
+    if(p.eventType === "DELETE") data.delete(p.old.id);
+    else if(p.new.id === pisu){
+      // nekdo zrovna pise do tohoto radku, necháme jeho rozepsaný text
+      const m = data.get(p.new.id) || {};
+      data.set(p.new.id, {...p.new, poznamka:m.poznamka, bod:m.bod});
+    } else data.set(p.new.id, p.new);
     render();
   }).subscribe();
 }
@@ -278,11 +285,12 @@ function hlaska(id, tr, cls){
   const el = document.querySelector(`.save[data-id="${CSS.escape(id)}"]`);
   if(!el) return; el.className = "save "+(cls||""); el.textContent = tr||"";
 }
-async function uloz(id, patch, akce){
+async function uloz(id, patch, akce, bezPrekresleni){
   if(!isOwner) return;
   const r = data.get(id); if(!r) return;
   const puvodni = {...r};
-  Object.assign(r, patch); render();
+  Object.assign(r, patch);
+  if(!bezPrekresleni) render();
   hlaska(id, "ukládám", "busy");
   try{
     await rest("nedodelky?id=eq."+encodeURIComponent(id), {method:"PATCH",
@@ -292,7 +300,8 @@ async function uloz(id, patch, akce){
     hlaska(id, "uloženo", "ok");
     setTimeout(()=>hlaska(id,"",""), 2200);
   }catch(e){
-    data.set(id, puvodni); render();
+    data.set(id, puvodni);
+    if(!bezPrekresleni) render();
     hlaska(id, "neuloženo", "err");
   }
 }
@@ -335,6 +344,11 @@ function vFiltru(r){
 }
 
 function render(){
+  const akt = document.activeElement;
+  const fok = (akt && akt.dataset && akt.dataset.act && (akt.tagName==="TEXTAREA"||akt.tagName==="INPUT"))
+    ? {a:akt.dataset.act, i:akt.dataset.id,
+       od:(akt.selectionStart??null), do:(akt.selectionEnd??null)} : null;
+  vratFokus(fok);
   const vse = [...data.values()].filter(r=>!r.skryto);
   const ned = vse.filter(r=>r.sekce==="nedodelky"), otz = vse.filter(r=>r.sekce==="otazky");
   document.getElementById("tabs").innerHTML =
@@ -411,6 +425,16 @@ function render(){
       </div></section>`;
   }).join("");
   document.getElementById("seznam").innerHTML = html || `<div class="grp"><div class="prazdne">Pro zvolený filtr tu nic není.</div></div>`;
+}
+
+function vratFokus(fok){
+  if(!fok) return;
+  queueMicrotask(()=>{
+    const el = document.querySelector(`[data-act="${fok.a}"][data-id="${CSS.escape(fok.i)}"]`);
+    if(!el || el === document.activeElement) return;
+    el.focus();
+    if(fok.od != null && el.setSelectionRange){ try{ el.setSelectionRange(fok.od, fok.do); }catch(e){} }
+  });
 }
 
 function radek(r){
@@ -520,7 +544,8 @@ document.addEventListener("input", (e)=>{
   clearTimeout(casovac);
   const pole = act==="pozn" ? "poznamka" : "bod";
   const hodnota = el.value;
-  casovac = setTimeout(()=> uloz(id, {[pole]: hodnota}), 700);
+  hlaska(id, "píše se", "busy");
+  casovac = setTimeout(()=> uloz(id, {[pole]: hodnota}, null, true), 700);
 });
 document.getElementById("sigBtn").addEventListener("click", ()=>openWho());
 document.getElementById("lockBtn").addEventListener("click", ()=>{
