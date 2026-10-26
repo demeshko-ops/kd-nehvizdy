@@ -122,6 +122,16 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
 .pozn textarea:focus{outline:2px solid var(--blueprint);outline-offset:-1px}
 .plab{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:12px;letter-spacing:.11em;
   text-transform:uppercase;color:var(--muted);display:block;margin-bottom:3px}
+.fotky{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:9px}
+.nahled{width:62px;height:62px;object-fit:cover;border-radius:6px;border:1px solid var(--line2);
+  cursor:zoom-in;background:var(--card2)}
+.nahled:hover{border-color:var(--blueprint)}
+.pridatFoto{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--blueprint);border:1px dashed var(--line2);border-radius:6px;
+  width:62px;height:62px;display:inline-flex;align-items:center;justify-content:center;
+  text-align:center;cursor:pointer;background:var(--card2)}
+.pridatFoto:hover{border-color:var(--blueprint);background:var(--card)}
+.modal img.velke{width:100%;height:auto;border-radius:6px;border:1px solid var(--line2);margin-bottom:4px}
 .save{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:12px;letter-spacing:.07em;
   text-transform:uppercase;min-height:14px;margin-top:4px}
 .save.ok{color:var(--hotovo)} .save.err{color:var(--pozde)} .save.busy{color:var(--trva)}
@@ -247,6 +257,8 @@ try{ const s=JSON.parse(localStorage.getItem("ned-ui")||"null"); if(s&&typeof s=
 const saveUi = () => { try{ localStorage.setItem("ned-ui", JSON.stringify(ui)); }catch(e){} };
 
 const data = new Map(BASE.map(r => [r.id, {...r}]));
+const fotky = new Map();       // bod_id -> [{id, nazev, nahled, autor, at}]
+let fotkyFunguji = false;
 
 function hlavicky(){
   const h = {apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY, "Content-Type":"application/json"};
@@ -270,6 +282,12 @@ async function nactiVse(){
     data.clear(); rows.forEach(r=>data.set(r.id, r));
     dbReady = true;
   }catch(e){ dbReady = false; }
+  try{
+    const f = await rest("nedodelky_foto?select=id,bod_id,nazev,nahled,autor,at&order=at");
+    fotky.clear();
+    f.forEach(x=>{ if(!fotky.has(x.bod_id)) fotky.set(x.bod_id, []); fotky.get(x.bod_id).push(x); });
+    fotkyFunguji = true;
+  }catch(e){ fotkyFunguji = false; }
   await overToken();
   render();
 }
@@ -474,6 +492,71 @@ function render(){
   document.getElementById("seznam").innerHTML = html || `<div class="grp"><div class="prazdne">Pro zvolený filtr tu nic není.</div></div>`;
 }
 
+function zmensi(soubor, max, kvalita){
+  return new Promise((hotovo, chyba)=>{
+    const img = new Image(), url = URL.createObjectURL(soubor);
+    img.onload = ()=>{
+      const s = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      hotovo(c.toDataURL("image/jpeg", kvalita));
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(url); chyba(new Error("Soubor se nepodařilo načíst.")); };
+    img.src = url;
+  });
+}
+
+async function nahrajFoto(bodId, soubor){
+  if(!isOwner || !soubor) return;
+  if(!/^image\//.test(soubor.type)){ toast("Tohle není obrázek."); return; }
+  hlaska(bodId, "zmenšuji foto", "busy");
+  try{
+    const [nahled, plne] = await Promise.all([zmensi(soubor, 240, 0.5), zmensi(soubor, 1400, 0.62)]);
+    hlaska(bodId, "nahrávám foto", "busy");
+    const r = await rest("nedodelky_foto", {method:"POST", headers:{Prefer:"return=representation"},
+      body: JSON.stringify([{bod_id:bodId, nazev:soubor.name||"foto.jpg", nahled, data:plne, autor:me||"neznámý"}])});
+    const z = r[0];
+    if(!fotky.has(bodId)) fotky.set(bodId, []);
+    fotky.get(bodId).push({id:z.id, bod_id:bodId, nazev:z.nazev, nahled, autor:z.autor, at:z.at});
+    render(); hlaska(bodId, "foto uloženo", "ok");
+    setTimeout(()=>hlaska(bodId, "", ""), 2200);
+  }catch(e){ hlaska(bodId, "foto se neuložilo", "err"); }
+}
+
+async function otevriFoto(fotoId, bodId){
+  const m = document.getElementById("modal");
+  m.innerHTML = `<h4>Foto</h4><p>Načítám…</p>`;
+  document.getElementById("mask").dataset.on = "true";
+  try{
+    const r = await rest("nedodelky_foto?select=id,nazev,data,autor,at&id=eq."+encodeURIComponent(fotoId));
+    const f = r[0];
+    m.innerHTML = `<h4>Foto</h4>
+      <p>${esc(f.autor||"")}${f.at?" · "+esc(czStamp(f.at)):""}</p>
+      <img class="velke" src="${f.data}" alt="${esc(f.nazev||"foto")}">
+      <div class="btnrow">
+        ${isOwner?`<button class="btn danger" data-act="fotoSmaz" data-id="${f.id}" data-bod="${esc(bodId)}">Smazat foto</button>`:""}
+        <button class="btn" data-act="zavri">Zavřít</button>
+      </div>`;
+  }catch(e){ m.innerHTML = `<h4>Foto</h4><p>Nepodařilo se načíst.</p>
+    <div class="btnrow"><button class="btn" data-act="zavri">Zavřít</button></div>`; }
+}
+
+async function smazFoto(fotoId, bodId){
+  if(!isOwner) return;
+  try{
+    await rest("nedodelky_foto?id=eq."+encodeURIComponent(fotoId), {method:"DELETE"});
+    fotky.set(bodId, (fotky.get(bodId)||[]).filter(x=>String(x.id)!==String(fotoId)));
+    document.getElementById("mask").dataset.on = "false";
+    render(); toast("Foto smazáno.");
+  }catch(e){ toast("Foto se nepodařilo smazat."); }
+}
+
+const czStamp = iso => { if(!iso) return ""; const d = new Date(iso);
+  return d.toLocaleDateString("cs-CZ",{day:"numeric",month:"numeric",year:"numeric"})
+    + " " + d.toLocaleTimeString("cs-CZ",{hour:"2-digit",minute:"2-digit"}); };
+
 function vratFokus(fok){
   if(!fok) return;
   queueMicrotask(()=>{
@@ -518,6 +601,13 @@ function radek(r){
         <textarea data-act="pozn" data-id="${esc(r.id)}" ${isOwner?"":"disabled"}
           placeholder="${isOwner?"Zapište poznámku k bodu":"Bez poznámky"}">${esc(r.poznamka||"")}</textarea>
       </div>` : (isOwner?`<button class="mini" data-act="poznPlus" data-id="${esc(r.id)}">+ poznámka</button>`:"")}
+      ${fotkyFunguji?`<div class="fotky">
+        ${(fotky.get(r.id)||[]).map(f=>`<img class="nahled" src="${f.nahled}" alt="${esc(f.nazev||"foto")}"
+          title="${esc(f.autor||"")}" data-act="fotoOtevri" data-id="${f.id}" data-bod="${esc(r.id)}">`).join("")}
+        ${isOwner?`<label class="pridatFoto">+ foto
+          <input type="file" accept="image/*" hidden data-act="fotoVstup" data-id="${esc(r.id)}">
+        </label>`:""}
+      </div>`:""}
       <div class="save" data-id="${esc(r.id)}"></div>
       ${isOwner?`<div class="rowbtns">
         <button class="mini" data-act="uprav" data-id="${esc(r.id)}">${upr?"Hotovo s textem":"Upravit text"}</button>
@@ -596,6 +686,8 @@ document.addEventListener("click", (e)=>{
     render(); return;
   }
   if(act==="smaz"){ smaz(id); return; }
+  if(act==="fotoOtevri"){ otevriFoto(id, el.dataset.bod); return; }
+  if(act==="fotoSmaz"){ smazFoto(id, el.dataset.bod); return; }
   if(act==="pridat"){
     if(!isOwner){ openKod(); return; }
     const box = el.closest(".pridat");
@@ -624,6 +716,12 @@ document.addEventListener("input", (e)=>{
   const hodnota = el.value;
   hlaska(id, "píše se", "busy");
   casovac = setTimeout(()=> uloz(id, {[pole]: hodnota}, null, true), 700);
+});
+document.addEventListener("change", (e)=>{
+  const el = e.target.closest('[data-act="fotoVstup"]'); if(!el) return;
+  const soubor = el.files && el.files[0];
+  el.value = "";
+  if(soubor) nahrajFoto(el.dataset.id, soubor);
 });
 document.addEventListener("keydown", (e)=>{
   if(e.key !== "Enter") return;
