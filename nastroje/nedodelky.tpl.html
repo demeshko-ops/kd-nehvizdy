@@ -83,6 +83,14 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
 .gpoc b{color:var(--hotovo)}
 .gcaret{color:var(--muted);font-size:12px;transition:transform .16s ease}
 .grp[data-open="true"] .gcaret{transform:rotate(90deg)}
+.grp.prazdny{background:#f4f3ee;border-style:dashed;box-shadow:none;opacity:.78}
+.grp.prazdny .ghead{cursor:default;padding-block:10px}
+.grp.prazdny .gbyt{font-weight:600;color:var(--muted)}
+.grp.prazdny .gpod{color:var(--muted)}
+.znacka{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--muted);background:var(--card);border:1px dashed var(--line2);
+  border-radius:4px;padding:2px 9px}
+.kpi.k-prazdne .val{color:var(--muted)}
 .gbody{display:none;background:var(--card);border-top:1px solid var(--line)}
 .grp[data-open="true"] .gbody{display:block}
 
@@ -99,6 +107,7 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
   color:var(--muted);background:var(--card2);vertical-align:1px}
 .prof.p-ELE{color:#1a4f8a;border-color:#bcd0e6;background:#eaf1f9}
 .prof.p-ZTI{color:#0f6d4a;border-color:#b6d9c9;background:#e8f4ee}
+.prof.p-KLI{color:#8a4a0d;border-color:#e3cdae;background:#fbf2e6}
 .row.hot .prof{opacity:.6}
 .mist{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
   color:var(--muted);display:block;margin-bottom:3px}
@@ -209,6 +218,12 @@ const SUPA_KEY = "__SUPA_KEY__";
 const OBCHUZKA = "__OBCHUZKA__";
 const BASE = __BASE__;
 
+// Patra odvozena z obchůzky: 16-20 jsou doložené ve 2. NP, 25-32 ve 3. NP.
+// Zbytek dopočítán po devíti bytech na patro. Kdyby to bylo jinak, stačí přepsat.
+const BYTY_VSE = Array.from({length:33}, (_, i) => {
+  const n = i + 1;
+  return {byt:String(n), podlazi: n <= 15 ? "1. NP" : n <= 24 ? "2. NP" : "3. NP"};
+});
 const LIDE = ["Marina","pan Zeman","pan Kret","pan Kuchař","S. Zavodnov","P. Jelínek","vlastní parta"];
 const esc = s => String(s??"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const dnes = () => new Date().toISOString().slice(0,10);
@@ -221,7 +236,7 @@ let editToken=null, me=null, isOwner=false, dbReady=false, sb=null, zKodu="";
 try{ editToken = localStorage.getItem("kd-token") || null; }catch(e){}
 try{ me = localStorage.getItem("kd-podpis") || null; }catch(e){}
 
-let ui = {tab:"nedodelky", podlazi:"all", byt:"all", prof:"all", stav:"otevrene", otevrene:{}};
+let ui = {tab:"nedodelky", podlazi:"all", byt:"all", prof:"all", stav:"otevrene", zaznam:"all", otevrene:{}};
 try{ const s=JSON.parse(localStorage.getItem("ned-ui")||"null"); if(s&&typeof s==="object") ui=Object.assign(ui,s); }catch(e){}
 const saveUi = () => { try{ localStorage.setItem("ned-ui", JSON.stringify(ui)); }catch(e){} };
 
@@ -375,11 +390,16 @@ function render(){
     <div class="kpi"><div class="lab">Bodů</div><div class="val">${sc.length}</div></div>
     <div class="kpi k-otev"><div class="lab">Otevřené</div><div class="val">${sc.length-hot}</div></div>
     <div class="kpi k-hot"><div class="lab">Hotové</div><div class="val">${hot}</div></div>
-    <div class="kpi"><div class="lab">Bytů</div><div class="val">${new Set(sc.map(r=>r.byt)).size}</div></div>
+    <div class="kpi"><div class="lab">Bytů s body</div><div class="val">${new Set(sc.filter(r=>/^\d+$/.test(r.byt)).map(r=>r.byt)).size}</div></div>
+    ${ui.tab==="nedodelky"?`<div class="kpi k-prazdne"><div class="lab">Bez záznamu</div><div class="val">${BYTY_VSE.filter(b=>!new Set(sc.map(r=>r.byt)).has(b.byt)).length}</div></div>`:""}
   </div>`;
 
   const pod = [...new Set(sc.map(r=>r.podlazi))];
-  const byty = [...new Set(sc.filter(r=>ui.podlazi==="all"||r.podlazi===ui.podlazi).map(r=>r.byt))];
+  const sBody = new Set(sc.map(r=>r.byt));
+  const byty = [...new Set([
+    ...sc.filter(r=>ui.podlazi==="all"||r.podlazi===ui.podlazi).map(r=>r.byt),
+    ...(ui.tab==="nedodelky" ? BYTY_VSE.filter(b=>ui.podlazi==="all"||b.podlazi===ui.podlazi).map(b=>b.byt) : [])
+  ])].sort((a,b)=>{const x=parseFloat(a),y=parseFloat(b); return (isNaN(x)?-1:x)-(isNaN(y)?-1:y);});
   const profs = [...new Set(sc.map(r=>profese(r.bod)).filter(Boolean))].sort();
   const ch = (f, vals, popisky) => [`<button class="chip" aria-pressed="${ui[f]==="all"}" data-f="${f}" data-v="all">Vše</button>`]
     .concat(vals.map(v=>`<button class="chip" aria-pressed="${ui[f]===v}" data-f="${f}" data-v="${esc(v)}">${esc((popisky||{})[v]||v)}</button>`)).join("");
@@ -390,6 +410,11 @@ function render(){
       <button class="chip" aria-pressed="${ui.prof==="all"}" data-f="prof" data-v="all">Vše</button>
       ${profs.map(pf=>`<button class="chip" aria-pressed="${ui.prof===pf}" data-f="prof" data-v="${esc(pf)}">${esc(pf)}</button>`).join("")}
       <button class="chip" aria-pressed="${ui.prof==="bez"}" data-f="prof" data-v="bez">bez profese</button>
+    </div></div>`:""}
+    ${ui.tab==="nedodelky"?`<div class="fgroup"><h3>Záznam</h3><div class="fchips">
+      <button class="chip" aria-pressed="${ui.zaznam==="all"}" data-f="zaznam" data-v="all">Vše</button>
+      <button class="chip" aria-pressed="${ui.zaznam==="sbody"}" data-f="zaznam" data-v="sbody">Jen s body</button>
+      <button class="chip" aria-pressed="${ui.zaznam==="prazdne"}" data-f="zaznam" data-v="prazdne">Jen prázdné</button>
     </div></div>`:""}
     <div class="fgroup"><h3>Stav</h3><div class="fchips">
       <button class="chip" aria-pressed="${ui.stav==="all"}" data-f="stav" data-v="all">Vše</button>
@@ -403,8 +428,28 @@ function render(){
     if(!g){ g={byt:r.byt, podlazi:r.podlazi, vse:[], zobrazene:[]}; skupiny.push(g); }
     g.vse.push(r); if(vybrane.includes(r)) g.zobrazene.push(r); });
 
-  const html = skupiny.filter(g=>g.zobrazene.length).map(g=>{
+  // byty, do kterých zatím nikdo nic nezapsal
+  if(ui.tab === "nedodelky"){
+    const uzJsou = new Set(skupiny.map(g=>g.byt));
+    BYTY_VSE.forEach(b=>{ if(!uzJsou.has(b.byt))
+      skupiny.push({byt:b.byt, podlazi:b.podlazi, vse:[], zobrazene:[], prazdny:true}); });
+  }
+  const cisloBytu = b => { const n = parseFloat(b); return isNaN(n) ? -1 : n; };
+  skupiny.sort((x,y)=> cisloBytu(x.byt) - cisloBytu(y.byt));
+
+  const prazdneLzeUkazat = ui.prof==="all" && ui.stav!=="hotove" && ui.zaznam!=="sbody";
+  const html = skupiny.filter(g=>{
+    if(g.prazdny) return prazdneLzeUkazat
+      && (ui.podlazi==="all" || g.podlazi===ui.podlazi)
+      && (ui.byt==="all" || g.byt===ui.byt);
+    return ui.zaznam!=="prazdne" && g.zobrazene.length;
+  }).map(g=>{
     const hotG = g.vse.filter(r=>r.hotovo).length;
+    if(g.prazdny) return `<section class="grp prazdny" data-byt="${esc(g.byt)}">
+      <div class="ghead">
+        <span><span class="gbyt">Byt ${esc(g.byt)}</span><span class="gpod"> &nbsp;${esc(g.podlazi)}</span></span>
+        <span class="gpoc"><span class="znacka">bez záznamu</span></span>
+      </div></section>`;
     const open = ui.otevrene[ui.tab+"|"+g.byt] !== false;
     return `<section class="grp" data-open="${open}" data-byt="${esc(g.byt)}">
       <button class="ghead" data-act="grp" data-byt="${esc(g.byt)}">
