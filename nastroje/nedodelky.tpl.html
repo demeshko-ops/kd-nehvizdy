@@ -84,7 +84,8 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
 .gcaret{color:var(--muted);font-size:12px;transition:transform .16s ease}
 .grp[data-open="true"] .gcaret{transform:rotate(90deg)}
 .grp.prazdny{background:#f4f3ee;border-style:dashed;box-shadow:none;opacity:.78}
-.grp.prazdny .ghead{cursor:default;padding-block:10px}
+.grp.prazdny .ghead{padding-block:10px}
+.grp.prazdny .gbody{background:var(--card2)}
 .grp.prazdny .gbyt{font-weight:600;color:var(--muted)}
 .grp.prazdny .gpod{color:var(--muted)}
 .znacka{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.09em;
@@ -444,12 +445,14 @@ function render(){
     return ui.zaznam!=="prazdne" && g.zobrazene.length;
   }).map(g=>{
     const hotG = g.vse.filter(r=>r.hotovo).length;
-    if(g.prazdny) return `<section class="grp prazdny" data-byt="${esc(g.byt)}">
-      <div class="ghead">
+    const klic = ui.tab+"|"+g.byt;
+    const open = ui.otevrene[klic] !== undefined ? ui.otevrene[klic] : !g.prazdny;
+    if(g.prazdny) return `<section class="grp prazdny" data-open="${open}" data-byt="${esc(g.byt)}">
+      <button class="ghead" data-act="grp" data-byt="${esc(g.byt)}" data-prazdny="1" data-pod="${esc(g.podlazi)}">
         <span><span class="gbyt">Byt ${esc(g.byt)}</span><span class="gpod"> &nbsp;${esc(g.podlazi)}</span></span>
-        <span class="gpoc"><span class="znacka">bez záznamu</span></span>
-      </div></section>`;
-    const open = ui.otevrene[ui.tab+"|"+g.byt] !== false;
+        <span class="gpoc"><span class="znacka">bez záznamu</span><span class="gcaret">&#9656;</span></span>
+      </button>
+      <div class="gbody">${pridatRadek(g)}</div></section>`;
     return `<section class="grp" data-open="${open}" data-byt="${esc(g.byt)}">
       <button class="ghead" data-act="grp" data-byt="${esc(g.byt)}">
         <span><span class="gbyt">${/^\d+$/.test(g.byt) ? "Byt " + esc(g.byt) : esc(g.byt)}</span>
@@ -459,13 +462,7 @@ function render(){
       </button>
       <div class="gbody">
         ${g.zobrazene.map(r=>radek(r)).join("")}
-        <div class="pridat" data-byt="${esc(g.byt)}" data-pod="${esc(g.podlazi)}">
-          ${isOwner?`<input class="mis" type="text" placeholder="Místnost (nepovinné)">
-          <input class="bod" type="text" placeholder="Nový bod">
-          <button class="btn primary" data-act="pridat">Přidat</button>`
-          :`<span class="zamek">Chcete sem něco dopsat nebo opravit?</span>
-            <button class="btn primary" data-act="prihlas">Přihlásit se kódem</button>`}
-        </div>
+        ${pridatRadek(g)}
       </div></section>`;
   }).join("");
   document.getElementById("seznam").innerHTML = html || `<div class="grp"><div class="prazdne">Pro zvolený filtr tu nic není.</div></div>`;
@@ -479,6 +476,16 @@ function vratFokus(fok){
     el.focus();
     if(fok.od != null && el.setSelectionRange){ try{ el.setSelectionRange(fok.od, fok.do); }catch(e){} }
   });
+}
+
+function pridatRadek(g){
+  return `<div class="pridat" data-byt="${esc(g.byt)}" data-pod="${esc(g.podlazi)}">
+    ${isOwner?`<input class="mis" type="text" data-act="novaMistnost" data-id="${esc(g.byt)}" placeholder="Místnost (nepovinné)">
+    <input class="bod" type="text" data-act="novyBod" data-id="${esc(g.byt)}" placeholder="${g.prazdny?"První bod pro byt "+esc(g.byt):"Nový bod"}">
+    <button class="btn primary" data-act="pridat">Přidat</button>`
+    :`<span class="zamek">Chcete sem něco dopsat nebo opravit?</span>
+      <button class="btn primary" data-act="prihlas">Přihlásit se kódem</button>`}
+  </div>`;
 }
 
 function radek(r){
@@ -558,8 +565,15 @@ document.addEventListener("click", (e)=>{
   const act = el.dataset.act, id = el.dataset.id;
   if(act==="zavri"){ document.getElementById("mask").dataset.on="false"; return; }
   if(act==="grp"){
-    const k = ui.tab+"|"+el.dataset.byt;
-    ui.otevrene[k] = ui.otevrene[k] === false; saveUi(); render(); return;
+    const byt = el.dataset.byt, k = ui.tab+"|"+byt;
+    const jePrazdny = el.dataset.prazdny === "1";
+    const ted = ui.otevrene[k] !== undefined ? ui.otevrene[k] : !jePrazdny;
+    ui.otevrene[k] = !ted; saveUi(); render();
+    if(!ted && isOwner) queueMicrotask(()=>{
+      const inp = document.querySelector(`.grp[data-byt="${CSS.escape(byt)}"] .bod`);
+      if(inp) inp.focus();
+    });
+    return;
   }
   if(act==="hotovo"){
     if(!isOwner){ el.checked = !el.checked; openKod(); return; }
@@ -576,8 +590,13 @@ document.addEventListener("click", (e)=>{
     if(!isOwner){ openKod(); return; }
     const box = el.closest(".pridat");
     const bod = box.querySelector(".bod").value, mis = box.querySelector(".mis").value;
-    pridej(box.dataset.byt, box.dataset.pod, mis, bod);
-    box.querySelector(".bod").value=""; box.querySelector(".mis").value=""; return;
+    const byt = box.dataset.byt;
+    ui.otevrene[ui.tab+"|"+byt] = true; saveUi();
+    pridej(byt, box.dataset.pod, mis, bod).then(()=>{
+      const dalsi = document.querySelector(`.grp[data-byt="${CSS.escape(byt)}"] .bod`);
+      if(dalsi){ dalsi.value=""; dalsi.focus(); }
+    });
+    return;
   }
 });
 let casovac = null;
@@ -590,6 +609,12 @@ document.addEventListener("input", (e)=>{
   const hodnota = el.value;
   hlaska(id, "píše se", "busy");
   casovac = setTimeout(()=> uloz(id, {[pole]: hodnota}, null, true), 700);
+});
+document.addEventListener("keydown", (e)=>{
+  if(e.key !== "Enter") return;
+  const inp = e.target.closest(".pridat .bod"); if(!inp) return;
+  e.preventDefault();
+  inp.closest(".pridat").querySelector("[data-act=pridat]").click();
 });
 document.getElementById("sigBtn").addEventListener("click", ()=>openWho());
 document.getElementById("lockBtn").addEventListener("click", ()=>{
