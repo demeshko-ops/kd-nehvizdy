@@ -140,6 +140,9 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
   padding:7px 9px;background:var(--card)}
 .pridat input.bod{flex:1;min-width:220px}
 .pridat input.mis{width:150px}
+.pridat .profsel{font:inherit;font-size:14px;border:1px solid var(--line2);border-radius:5px;
+  padding:7px 8px;background:var(--card);color:var(--ink);width:120px}
+.pridat .profsel:focus{outline:2px solid var(--blueprint);outline-offset:-1px}
 .btn.primary{background:var(--blueprint);border-color:var(--blueprint);color:#fff;border-radius:5px}
 .zamek{color:var(--muted);font-size:14px}
 .prazdne{padding:22px 15px;color:var(--muted);font-style:italic;text-align:center}
@@ -228,6 +231,9 @@ const LIDE = ["Marina","pan Zeman","pan Kret","pan Kuchař","S. Zavodnov","P. Je
 const esc = s => String(s??"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const dnes = () => new Date().toISOString().slice(0,10);
 const RE_PROF = /^([A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ]{2,5})\s*:\s*/;
+const PROFESE_ZAKLAD = ["ELE","ZTI","KLI"];
+const vsechnyProfese = () => [...new Set([...PROFESE_ZAKLAD,
+  ...[...data.values()].map(r=>profese(r.bod)).filter(Boolean)])].sort();
 const profese = t => { const m = RE_PROF.exec(String(t||"")); return m ? m[1] : ""; };
 const bezProf = t => String(t||"").replace(RE_PROF, "");
 const cz = iso => { if(!iso) return ""; const d=String(iso).slice(0,10).split("-"); return `${+d[2]}. ${+d[1]}. ${d[0]}`; };
@@ -236,7 +242,7 @@ let editToken=null, me=null, isOwner=false, dbReady=false, sb=null, zKodu="";
 try{ editToken = localStorage.getItem("kd-token") || null; }catch(e){}
 try{ me = localStorage.getItem("kd-podpis") || null; }catch(e){}
 
-let ui = {tab:"nedodelky", podlazi:"all", byt:"all", prof:"all", stav:"otevrene", zaznam:"all", otevrene:{}};
+let ui = {tab:"nedodelky", podlazi:"all", byt:"all", prof:"all", stav:"otevrene", zaznam:"all", poslProf:"", otevrene:{}};
 try{ const s=JSON.parse(localStorage.getItem("ned-ui")||"null"); if(s&&typeof s==="object") ui=Object.assign(ui,s); }catch(e){}
 const saveUi = () => { try{ localStorage.setItem("ned-ui", JSON.stringify(ui)); }catch(e){} };
 
@@ -480,7 +486,11 @@ function vratFokus(fok){
 
 function pridatRadek(g){
   return `<div class="pridat" data-byt="${esc(g.byt)}" data-pod="${esc(g.podlazi)}">
-    ${isOwner?`<input class="mis" type="text" data-act="novaMistnost" data-id="${esc(g.byt)}" placeholder="Místnost (nepovinné)">
+    ${isOwner?`<select class="profsel" data-act="novaProf" data-id="${esc(g.byt)}" aria-label="Profese">
+      <option value="">bez profese</option>
+      ${vsechnyProfese().map(pf=>`<option value="${esc(pf)}" ${ui.poslProf===pf?"selected":""}>${esc(pf)}</option>`).join("")}
+    </select>
+    <input class="mis" type="text" data-act="novaMistnost" data-id="${esc(g.byt)}" placeholder="Místnost (nepovinné)">
     <input class="bod" type="text" data-act="novyBod" data-id="${esc(g.byt)}" placeholder="${g.prazdny?"První bod pro byt "+esc(g.byt):"Nový bod"}">
     <button class="btn primary" data-act="pridat">Přidat</button>`
     :`<span class="zamek">Chcete sem něco dopsat nebo opravit?</span>
@@ -589,7 +599,12 @@ document.addEventListener("click", (e)=>{
   if(act==="pridat"){
     if(!isOwner){ openKod(); return; }
     const box = el.closest(".pridat");
-    const bod = box.querySelector(".bod").value, mis = box.querySelector(".mis").value;
+    const sel = box.querySelector(".profsel");
+    const pf = sel ? sel.value : "";
+    if(sel){ ui.poslProf = pf; saveUi(); }
+    let bod = box.querySelector(".bod").value;
+    if(pf && !RE_PROF.test(bod.trim())) bod = pf + ": " + bod.trim();
+    const mis = box.querySelector(".mis").value;
     const byt = box.dataset.byt;
     ui.otevrene[ui.tab+"|"+byt] = true; saveUi();
     pridej(byt, box.dataset.pod, mis, bod).then(()=>{
