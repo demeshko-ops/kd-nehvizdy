@@ -237,7 +237,7 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
 </div>
 
 <script>
-const BUILD = "20261026183740";
+const BUILD = "20261026192223";
 const SUPA_URL = "https://adcdobpbkbirsvdvcfyb.supabase.co";
 const SUPA_KEY = "sb_publishable_IvglSuxeXJ8iimxyxA34Bw_LvodLxt4";
 const OBCHUZKA = "23. 10. 2026";
@@ -519,21 +519,32 @@ function zmensi(soubor, max, kvalita){
   });
 }
 
-async function nahrajFoto(bodId, soubor){
+async function nahrajFoto(bodId, soubor, tise){
   if(!isOwner || !soubor) return;
-  if(!/^image\//.test(soubor.type)){ toast("Tohle není obrázek."); return; }
-  hlaska(bodId, "zmenšuji foto", "busy");
+  if(!/^image\//.test(soubor.type)){ toast("Soubor " + (soubor.name||"") + " není obrázek."); return; }
+  if(!tise) hlaska(bodId, "zmenšuji foto", "busy");
   try{
     const [nahled, plne] = await Promise.all([zmensi(soubor, 240, 0.5), zmensi(soubor, 1400, 0.62)]);
-    hlaska(bodId, "nahrávám foto", "busy");
+    if(!tise) hlaska(bodId, "nahrávám foto", "busy");
     const r = await rest("nedodelky_foto", {method:"POST", headers:{Prefer:"return=representation"},
       body: JSON.stringify([{bod_id:bodId, nazev:soubor.name||"foto.jpg", nahled, data:plne, autor:me||"neznámý"}])});
     const z = r[0];
     if(!fotky.has(bodId)) fotky.set(bodId, []);
     fotky.get(bodId).push({id:z.id, bod_id:bodId, nazev:z.nazev, nahled, autor:z.autor, at:z.at});
-    render(); hlaska(bodId, "foto uloženo", "ok");
-    setTimeout(()=>hlaska(bodId, "", ""), 2200);
+    render();
+    if(!tise){ hlaska(bodId, "foto uloženo", "ok"); setTimeout(()=>hlaska(bodId, "", ""), 2200); }
   }catch(e){ hlaska(bodId, "foto se neuložilo", "err"); }
+}
+
+async function nahrajFotky(bodId, soubory){
+  for(let i = 0; i < soubory.length; i++){
+    if(soubory.length > 1) hlaska(bodId, `foto ${i+1} z ${soubory.length}`, "busy");
+    await nahrajFoto(bodId, soubory[i], soubory.length > 1);
+  }
+  if(soubory.length > 1){
+    hlaska(bodId, `uloženo ${soubory.length} fotek`, "ok");
+    setTimeout(()=>hlaska(bodId, "", ""), 2600);
+  }
 }
 
 async function otevriFoto(fotoId, bodId){
@@ -616,7 +627,7 @@ function radek(r){
         ${(fotky.get(r.id)||[]).map(f=>`<img class="nahled" src="${f.nahled}" alt="${esc(f.nazev||"foto")}"
           title="${esc(f.autor||"")}" data-act="fotoOtevri" data-id="${f.id}" data-bod="${esc(r.id)}">`).join("")}
         ${isOwner?`<label class="pridatFoto">+ foto
-          <input type="file" accept="image/*" hidden data-act="fotoVstup" data-id="${esc(r.id)}">
+          <input type="file" accept="image/*" multiple hidden data-act="fotoVstup" data-id="${esc(r.id)}">
         </label>`:""}
       </div>`:""}
       <div class="save" data-id="${esc(r.id)}"></div>
@@ -730,9 +741,9 @@ document.addEventListener("input", (e)=>{
 });
 document.addEventListener("change", (e)=>{
   const el = e.target.closest('[data-act="fotoVstup"]'); if(!el) return;
-  const soubor = el.files && el.files[0];
+  const soubory = [...(el.files || [])];
   el.value = "";
-  if(soubor) nahrajFoto(el.dataset.id, soubor);
+  if(soubory.length) nahrajFotky(el.dataset.id, soubory);
 });
 document.addEventListener("keydown", (e)=>{
   if(e.key !== "Enter") return;
