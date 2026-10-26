@@ -218,11 +218,10 @@ const SUPA_KEY = "__SUPA_KEY__";
 const OBCHUZKA = "__OBCHUZKA__";
 const BASE = __BASE__;
 
-// Patra odvozena z obchůzky: 16-20 jsou doložené ve 2. NP, 25-32 ve 3. NP.
-// Zbytek dopočítán po devíti bytech na patro. Kdyby to bylo jinak, stačí přepsat.
+// Rozdělení pater podle zadání: 1-10 první, 11-24 druhé, 25-33 třetí.
 const BYTY_VSE = Array.from({length:33}, (_, i) => {
   const n = i + 1;
-  return {byt:String(n), podlazi: n <= 15 ? "1. NP" : n <= 24 ? "2. NP" : "3. NP"};
+  return {byt:String(n), podlazi: n <= 10 ? "1. NP" : n <= 24 ? "2. NP" : "3. NP"};
 });
 const LIDE = ["Marina","pan Zeman","pan Kret","pan Kuchař","S. Zavodnov","P. Jelínek","vlastní parta"];
 const esc = s => String(s??"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
