@@ -109,6 +109,7 @@ h2::after{content:"";flex:1;height:1px;background:var(--line)}
 .prof.p-ELE{color:#1a4f8a;border-color:#bcd0e6;background:#eaf1f9}
 .prof.p-ZTI{color:#0f6d4a;border-color:#b6d9c9;background:#e8f4ee}
 .prof.p-KLI{color:#8a4a0d;border-color:#e3cdae;background:#fbf2e6}
+.prof.p-STAV{color:#5a5446;border-color:#d6d0c2;background:#f4f1e9}
 .row.hot .prof{opacity:.6}
 .mist{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
   color:var(--muted);display:block;margin-bottom:3px}
@@ -241,7 +242,7 @@ const LIDE = ["Marina","pan Zeman","pan Kret","pan Kuchař","S. Zavodnov","P. Je
 const esc = s => String(s??"").replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const dnes = () => new Date().toISOString().slice(0,10);
 const RE_PROF = /^([A-ZÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ]{2,5})\s*:\s*/;
-const PROFESE_ZAKLAD = ["ELE","ZTI","KLI"];
+const PROFESE_ZAKLAD = ["ELE","ZTI","KLI","STAV"];
 const vsechnyProfese = () => [...new Set([...PROFESE_ZAKLAD,
   ...[...data.values()].map(r=>profese(r.bod)).filter(Boolean)])].sort();
 const profese = t => { const m = RE_PROF.exec(String(t||"")); return m ? m[1] : ""; };
