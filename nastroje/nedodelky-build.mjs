@@ -2,7 +2,7 @@ import fs from 'fs';
 import { api } from './site/nastroje/kd.mjs';
 
 const radky = JSON.parse(fs.readFileSync('nedodelky-rows.json','utf8'));
-const OBCHUZKA = '23. 10. 2026';
+const OBCHUZKA = '23. 10. a 29. 10. 2026';
 
 const rezim = process.argv[2] || 'build';
 
