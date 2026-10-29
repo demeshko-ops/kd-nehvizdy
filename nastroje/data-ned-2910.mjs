@@ -53,6 +53,9 @@ export const BODY = [
 ["17","","ZTI: Udělat vývod na vanu do jedné stoupačky a rozebrat zbytečné rohy. Poslat fotku Jardovi."],
 ["17","","STAV: Vyspravit díru po přesunu elektriky, tam kde se bude předělávat panel uprostřed."],
 
-// --- byt 27 (cislo bytu ze zaznamu, overit) ---
-["27","Šachta","STAV: Opláštit nebo zazdít stoupačku, provede se sádrokartonem. Číslo bytu je ze záznamu bez slova byt, ověřit na místě."],
+// --- byt 27 ---
+["27","Šachta","STAV: Opláštit nebo zazdít stoupačku, provede se sádrokartonem."],
+
+// --- byt 28 ---
+["28","Terasa","STAV: Terasa není dodělaná, chybí úklid."],
 ];
