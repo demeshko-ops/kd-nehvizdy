@@ -35,7 +35,8 @@ if(!h.includes('--zavodnov')){
 }
 
 // 3. popisek a build
-h = h.replace(/kontrolních dnů č\. 24 až \d+ a nástěnka/, 'kontrolních dnů č. 24 až 29, pracovní porady a nástěnka');
+const maxKD = Math.max(...KD.filter(k=>k.typ==='KD').map(k=>k.cislo));
+h = h.replace(/kontrolních dnů č\. 24 až \d+/, 'kontrolních dnů č. 24 až '+maxKD);
 const BUILD = new Date().toISOString().replace(/[-:T]/g,'').slice(0,14);
 h = h.replace(/const BUILD = "\d+";/, 'const BUILD = "'+BUILD+'";');
 
