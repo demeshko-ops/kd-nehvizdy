@@ -31,12 +31,9 @@ create policy sanita_zmena on sanita_docs for update
   with check (sanita_admin() or (sanita_smi() and path like 'flats/%'));
 grant select, insert, update on sanita_docs to anon, authenticated;
 
--- Pristup: admin + Jelinek (kod se vygeneruje jen kdyz jeste neni).
-insert into pristupy (kod, jmeno)
-  select replace(gen_random_uuid()::text,'-',''), 'Jelínek'
-  where not exists (select 1 from pristupy where jmeno ilike 'jel%nek%');
+-- Pristup: admin + Jelinek se svym stavajicim kodem, nove kody se nevytvareji.
 update pristupy set sanita = true where role = 'admin' or jmeno ilike 'jel%nek%';
 
-select jmeno, role, kod from pristupy where sanita;
+select jmeno, role, aktivni, sanita from pristupy order by jmeno;
 -- Pridat cloveka: update pristupy set sanita = true where jmeno = 'Jmeno';
 -- Odebrat: update pristupy set sanita = false where jmeno = 'Jmeno';
