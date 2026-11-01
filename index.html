@@ -338,6 +338,7 @@ select[disabled],input[disabled],textarea[disabled]{opacity:.5;cursor:not-allowe
     <div class="eyebrow">Henderson Group <span>· BD Pod hvězdami Nehvizdy</span></div>
     <div class="topright">
       <a class="sig" href="nedodelky/" style="text-decoration:none">Nedodělky po bytech</a>
+      <a class="sig" id="sanitaLink" href="sanita/" style="text-decoration:none" hidden>Sanita po bytech</a>
       <span class="conn" id="conn"></span>
       <button class="sig" id="lockBtn" type="button"></button>
       <button class="sig" id="sigBtn" type="button"></button>
@@ -1168,5 +1169,10 @@ boot();
 })();
 </script>
 
+<script>
+(async()=>{try{const t=localStorage.getItem("kd-token");if(!t)return;
+const r=await fetch("https://adcdobpbkbirsvdvcfyb.supabase.co/rest/v1/rpc/sanita_smi",{method:"POST",headers:{apikey:"sb_publishable_IvglSuxeXJ8iimxyxA34Bw_LvodLxt4",Authorization:"Bearer sb_publishable_IvglSuxeXJ8iimxyxA34Bw_LvodLxt4","Content-Type":"application/json","x-edit-token":t},body:"{}"});
+if(r.ok&&await r.json()===true)document.getElementById("sanitaLink").hidden=false}catch(e){}})();
+</script>
 </body>
 </html>

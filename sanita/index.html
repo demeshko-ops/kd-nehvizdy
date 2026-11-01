@@ -1,0 +1,469 @@
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body><title>Sanita Nehvizdy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<meta name="robots" content="noindex,nofollow"><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+/* Layout: one-handed site tool. Door-plate tiles per floor, a single column of large dropdowns, fixed bottom tabs. */
+:root{
+  --bg:#eef3f5;--surface:#ffffff;--fg:#10252e;--muted:#536973;--line:#cbd7dc;
+  --accent:#0a5f7a;--accent-fg:#ffffff;
+  --done:#1c7a4c;--done-bg:#dcf1e6;--wip:#0a5f7a;--wip-bg:#d9edf4;--custom:#8a5300;--custom-bg:#fbeacb;--warn:#a5331f;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;--body:"Barlow",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1a20;--surface:#17272f;--fg:#e8f1f4;--muted:#9db1ba;--line:#2f4550;
+  --accent:#62c0dd;--accent-fg:#06222c;
+  --done:#7fdba9;--done-bg:#173a2a;--wip:#8bd2e9;--wip-bg:#163846;--custom:#f2c275;--custom-bg:#46320f;--warn:#ff9c88;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1a20;--surface:#17272f;--fg:#e8f1f4;--muted:#9db1ba;--line:#2f4550;
+  --accent:#62c0dd;--accent-fg:#06222c;
+  --done:#7fdba9;--done-bg:#173a2a;--wip:#8bd2e9;--wip-bg:#163846;--custom:#f2c275;--custom-bg:#46320f;--warn:#ff9c88;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:400 16px/1.4 var(--body)}
+#app{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 96px;display:grid;gap:18px}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.1;text-wrap:balance}
+h1{font-size:30px;font-weight:700}h2{font-size:23px;font-weight:600}h3{font-size:20px;font-weight:600}
+p{margin:0}.muted{color:var(--muted)}.small{font-size:14px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{font-size:13px;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--done-bg);color:var(--done);white-space:nowrap}
+.pill.wait{background:var(--custom-bg);color:var(--custom)}
+.floor{display:grid;gap:8px}
+.floor header{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.tile{font:inherit;color:var(--fg);background:var(--surface);border:1.5px solid var(--line);border-radius:6px;padding:7px 9px;text-align:left;cursor:pointer;display:grid;gap:1px;min-height:84px;align-content:start}
+.tile b{font:700 29px/1 var(--display)}
+.tile span{font-size:13px;color:var(--muted)}
+.tile em{font-style:normal;font-size:12.5px;font-weight:600;line-height:1.15}
+.tile.done{background:var(--done-bg);border-color:var(--done)}.tile.done em{color:var(--done)}
+.tile.wip{background:var(--wip-bg);border-color:var(--wip)}.tile.wip em{color:var(--wip)}
+.tile.custom{background:var(--custom-bg);border-color:var(--custom)}.tile.custom em{color:var(--custom)}
+.tile.none em{color:var(--muted)}
+.flat-head{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;background:var(--bg);padding-block:6px;display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:8px;border-bottom:1px solid var(--line)}
+.flat-head>div{min-width:0}
+.btn{font:600 15px var(--body);min-height:44px;padding:0 13px;border-radius:6px;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.main{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.btn.danger{color:var(--warn);border-color:var(--warn)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.room{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:13px}
+.room-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.field{display:grid;gap:4px;min-width:0}
+.field label{font-size:14px;font-weight:600}
+select,input[type="text"]{font:500 16px var(--body);width:100%;min-height:48px;padding:0 10px;border-radius:6px;border:1.5px solid var(--line);background:var(--bg);color:var(--fg)}
+select.empty{border-color:var(--accent);border-style:dashed}
+select.custom{border-color:var(--custom);background:var(--custom-bg)}
+.adds{font-size:13.5px;color:var(--muted);padding-left:9px;border-left:2px solid var(--line)}
+.adds.custom{color:var(--custom);border-color:var(--custom)}
+.toggles{display:grid;gap:2px;border-top:1px solid var(--line);padding-top:9px}
+.toggle{display:flex;gap:10px;align-items:center;min-height:42px;font-size:15px}
+.toggle input{width:22px;height:22px;flex:none;accent-color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.table-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th{text-align:left;font-size:12.5px;letter-spacing:.03em;color:var(--muted);font-weight:600;white-space:nowrap}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.code{font-size:12.5px;color:var(--muted);overflow-wrap:anywhere}
+.tag{font-size:12px;font-weight:600;color:var(--custom);background:var(--custom-bg);padding:1px 7px;border-radius:99px;white-space:nowrap}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+.sum div{display:grid}.sum b{font:700 27px/1.1 var(--display);font-variant-numeric:tabular-nums}
+.notice{padding:11px 13px;border-radius:6px;background:var(--custom-bg);color:var(--custom);font-size:14.5px}
+.ok{color:var(--done);font-weight:600}.off{color:var(--custom);font-weight:600}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+nav button{font:600 15px var(--body);min-height:56px;border:0;background:none;color:var(--muted);cursor:pointer;border-top:3px solid transparent}
+nav button.on{color:var(--accent);border-top-color:var(--accent)}
+section{display:grid;gap:10px}
+.sitenav{display:flex;gap:8px;flex-wrap:wrap;max-width:720px;margin:0 auto;padding:10px 16px 0}.sitenav a{font-size:13px;font-weight:600;color:inherit;border:1px solid var(--line);border-radius:99px;padding:4px 11px;text-decoration:none}</style>
+
+<div class="sitenav"><a href="../">Kontrolní dny</a><a href="../nedodelky/">Nedodělky po bytech</a></div><div id="app"><p class="muted">Načítám byty a katalog…</p></div>
+<nav id="nav" aria-label="Hlavní menu"></nav>
+
+<script>
+/*LOGIC*/
+const GROUPS={
+  wc:{label:"WC",none:"Bez WC"},
+  umyv:{label:"Umyvadlo",none:"Bez umyvadla"},
+  vana:{label:"Vana",none:"Bez vany"},
+  zastena:{label:"Sprcha: zástěna / kout",none:"Bez sprchy"},
+  odtok:{label:"Sprcha: odtok"}
+};
+const CUSTOM="_custom",NONE="_none";
+const EXTRAS=["bidet"],CONNECTIONS=["pracka","susicka"];
+const FLOORS=[{n:1,from:1,to:10},{n:2,from:11,to:24},{n:3,from:25,to:33}];
+function roomGroups(room){
+  if(room.type==="wc")return["wc","umyv"];
+  const g=["wc","umyv","vana","zastena"];
+  const z=room.sel.zastena;
+  if(z&&z!==NONE)g.push("odtok");
+  return g;
+}
+function roomLabel(room){return room.no?`${room.name} (č. ${room.no})`:room.name}
+function explodeRoom(room,opts){
+  const lines=[],customs=[];let missing=0;
+  const replaced=new Set();
+  const add=(o,kind)=>{
+    if(o.replaces)replaced.add(o.replaces);
+    for(const x of o.main||[])lines.push({i:x.i,q:x.q});
+    for(const x of o.block||[])lines.push({i:x.i,q:x.q});
+  };
+  for(const g of roomGroups(room)){
+    const v=room.sel[g];
+    if(!v){missing++;continue}
+    if(v===NONE)continue;
+    if(v===CUSTOM){customs.push(g);continue}
+    const o=opts[v];if(o)add(o);else missing++;
+  }
+  for(const t of[...EXTRAS,...(room.type==="wc"?[]:CONNECTIONS)]){
+    if(room.sel[t]&&opts[t])add(opts[t]);
+  }
+  return{lines:lines.filter(l=>!replaced.has(l.i)),customs,missing};
+}
+function flatStatus(flat,opts){
+  let sel=0,miss=0,cust=0;
+  for(const r of flat.rooms||[]){
+    const e=explodeRoom(r,opts);miss+=e.missing;cust+=e.customs.length;
+    sel+=roomGroups(r).filter(g=>r.sel[g]).length;
+  }
+  if(!sel)return"none";
+  if(miss)return"wip";
+  return cust?"custom":"done";
+}
+function aggregate(flats,opts,items){
+  const totals={},customs=[];let missing=0;
+  for(const f of flats)for(const r of f.rooms||[]){
+    const e=explodeRoom(r,opts);missing+=e.missing;
+    for(const l of e.lines)totals[l.i]=(totals[l.i]||0)+l.q;
+    for(const g of e.customs)customs.push({flat:f.n,room:roomLabel(r),group:g});
+  }
+  const rows=Object.keys(totals).map(id=>{
+    const it=items[id]||{name:id,code:"",price:null};
+    const price=typeof it.price==="number"?it.price:null;
+    return{id,code:it.code||"",name:it.name,qty:totals[id],price,sum:price===null?null:Math.round(price*totals[id]*100)/100,cat:it.cat||"z"};
+  }).sort((a,b)=>a.cat.localeCompare(b.cat)||a.name.localeCompare(b.name,"cs"));
+  const total=Math.round(rows.reduce((s,r)=>s+(r.sum||0),0)*100)/100;
+  return{rows,customs,total,unpriced:rows.filter(r=>r.price===null).length,missing};
+}
+function filterPhase(flats,phase){
+  if(phase==="all")return flats;
+  const later=phase==="later";
+  return flats.map(f=>({...f,rooms:(f.rooms||[]).filter(r=>!!r.poKolaudaci===later)}));
+}
+function countSelections(flats,opts){
+  const c={wc:0,vana:0,sprcha:0,umyv:0,dvoj:0};
+  for(const f of flats)for(const r of f.rooms||[]){
+    const s=r.sel;
+    if(s.wc&&s.wc!==NONE)c.wc++;
+    if(s.vana&&s.vana!==NONE)c.vana++;
+    if(r.type!=="wc"&&s.zastena&&s.zastena!==NONE)c.sprcha++;
+    if(s.umyv&&s.umyv!==NONE){if(opts[s.umyv]&&opts[s.umyv].double)c.dvoj++;else c.umyv++}
+  }
+  return c;
+}
+/*END*/
+if(typeof document!=="undefined")(function(){
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const kc=n=>n==null?"":n.toLocaleString("cs-CZ",{minimumFractionDigits:2,maximumFractionDigits:2});
+const S={view:"flats",flat:null,scope:"all",phase:"first",flats:{},items:null,opts:null,optList:[],loaded:{flats:false,cat:false,opt:false},
+  readOnly:false,noDb:false,slow:false,pending:{},sync:"ok",confirm:null,msg:""};
+let db=null,flushing=false,retry=null,deferred=false;
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+S.pending=store.get("sanita-pending",{});
+
+const flatList=()=>Object.keys(S.flats).map(Number).sort((a,b)=>a-b).map(n=>S.pending[n]||S.flats[n]);
+const getFlat=n=>S.pending[n]||S.flats[n];
+const ready=()=>S.items&&S.opts&&S.loaded.flats;
+const itemNames=o=>[...(o.main||[]),...(o.block||[])].map(x=>{const it=S.items[x.i];return(x.q>1?x.q+"× ":"")+(it?it.short||it.name:x.i)}).join(", ");
+
+function emptySel(custom){
+  const v=custom?CUSTOM:"";
+  return{wc:v,umyv:v,vana:v,zastena:v,odtok:v};
+}
+function newRoom(flat,type){
+  const same=flat.rooms.filter(r=>r.type===type).length+1;
+  const sel=emptySel(flat.defaultCustom);
+  if(type==="wc"){delete sel.vana;delete sel.zastena;delete sel.odtok}
+  return{id:"r"+Date.now().toString(36),type,name:(type==="wc"?"Samostatné WC ":"Koupelna ")+same,sel};
+}
+
+function saveFlat(f){
+  f.updatedAt=new Date().toISOString();
+  S.pending[f.n]=f;store.set("sanita-pending",S.pending);
+  render(true);flush();
+}
+async function flush(){
+  if(flushing||!db||S.readOnly)return;
+  flushing=true;clearTimeout(retry);
+  try{
+    for(const n of Object.keys(S.pending)){
+      const f=S.pending[n];
+      await db.doc("flats/"+n).set(JSON.parse(JSON.stringify(f)));
+      if(S.pending[n]===f){S.flats[n]=f;delete S.pending[n]}
+      store.set("sanita-pending",S.pending);
+    }
+    S.sync="ok";
+  }catch(e){
+    if(e&&e.code==="invalid_argument"){S.readOnly=true;S.pending={};store.set("sanita-pending",{})}
+    else if(e&&e.code==="revoked"){S.noDb=true}
+    else{S.sync="wait";retry=setTimeout(flush,15000)}
+  }
+  flushing=false;
+  if(Object.keys(S.pending).length&&S.sync==="ok"&&!S.readOnly)flush();
+  render();
+}
+addEventListener("online",flush);
+
+function syncPill(){
+  const n=Object.keys(S.pending).length;
+  if(S.readOnly)return'<span class="pill wait">Jen pro čtení</span>';
+  if(n)return`<span class="pill wait">Čeká na signál: ${n} ${n===1?"byt":"bytů"}</span>`;
+  return'<span class="pill">Uloženo</span>';
+}
+const STATUS={none:"Nezačato",wip:"Rozpracováno",done:"Hotovo",custom:"Svůj variant"};
+
+function viewFlats(){
+  const all=flatList();
+  const st=f=>flatStatus(f,S.opts);
+  const finished=all.filter(f=>st(f)==="done").length,cust=all.filter(f=>st(f)==="custom").length;
+  let h=`<div class="top"><div><h1>Sanita BD Nehvizdy</h1><p class="muted small">Hotovo ${finished} z ${all.length} bytů, svůj variant ${cust}</p></div>${syncPill()}</div>`;
+  for(const fl of FLOORS){
+    const fs=all.filter(f=>f.n>=fl.from&&f.n<=fl.to);
+    h+=`<section class="floor"><header><h2>${fl.n}. NP</h2><span class="muted small">byty ${fl.from} až ${fl.to}</span></header><div class="tiles">`;
+    for(const f of fs){const s=st(f);
+      h+=`<button class="tile ${s}" data-open="${f.n}" aria-label="Byt ${f.n}, ${esc(f.dispo)}, ${STATUS[s]}"><b>${f.n}</b><span>${esc(f.dispo)}</span><em>${STATUS[s]}</em></button>`}
+    h+=`</div></section>`;
+  }
+  return h;
+}
+
+function field(room,g){
+  const v=room.sel[g]||"",G=GROUPS[g];
+  const list=S.optList.filter(o=>o.group===g&&(!o.retired||v===o.id)&&(!o.onlyWith||o.onlyWith.includes(room.sel.zastena)));
+  let h=`<div class="field"><label for="s-${room.id}-${g}">${esc(G.label)}</label>`;
+  h+=`<select id="s-${room.id}-${g}" data-room="${room.id}" data-g="${g}" class="${v===CUSTOM?"custom":v?"":"empty"}" ${S.readOnly?"disabled":""}>`;
+  h+=`<option value=""${v?"":" selected"}>Vyberte…</option>`;
+  if(G.none)h+=`<option value="${NONE}"${v===NONE?" selected":""}>${esc(G.none)}</option>`;
+  for(const o of list){
+    const p=(o.main||[]).some(x=>S.items[x.i]&&typeof S.items[x.i].price!=="number");
+    h+=`<option value="${esc(o.id)}"${v===o.id?" selected":""}>${esc(o.label)}${p?" (cena ?)":""}</option>`;
+  }
+  h+=`<option value="${CUSTOM}"${v===CUSTOM?" selected":""}>Svůj variant (upřesní klient)</option></select>`;
+  if(v===CUSTOM)h+=`<p class="adds custom">Jde do seznamu Upřesnit s klientem, ne do objednávky.</p>`;
+  else if(v&&v!==NONE&&S.opts[v]&&S.opts[v].block&&S.opts[v].block.length)
+    h+=`<p class="adds">Přidá se: ${esc(S.opts[v].block.map(x=>{const it=S.items[x.i];return(x.q>1?x.q+"× ":"")+(it?it.short||it.name:x.i)}).join(", "))}</p>`;
+  return h+`</div>`;
+}
+
+function viewFlat(){
+  const f=getFlat(S.flat);
+  if(!f)return'<p>Byt nenalezen.</p>';
+  const fl=FLOORS.find(x=>f.n>=x.from&&f.n<=x.to);
+  let h=`<div class="flat-head"><button class="btn" data-back aria-label="Zpět na byty">Byty</button><div><h1>Byt ${f.n}</h1><p class="muted small">${fl.n}. NP · ${esc(f.dispo)} · ${STATUS[flatStatus(f,S.opts)]}</p></div>
+    <button class="btn" data-go="${f.n-1}" ${f.n<=1?"disabled":""} aria-label="Předchozí byt">‹</button><button class="btn" data-go="${f.n+1}" ${f.n>=33?"disabled":""} aria-label="Další byt">›</button></div>`;
+  if(S.readOnly)h+=`<p class="notice">Máte přístup jen pro čtení. O úpravy požádejte vlastníka aplikace.</p>`;
+  if(f.defaultCustom)h+=`<p class="notice">Byt s individuálním výběrem klienta: vše je předvyplněno jako svůj variant. Známé položky můžete změnit.</p>`;
+  for(const r of f.rooms){
+    h+=`<article class="room"><div class="room-head"><h2>${esc(r.name)}${r.poKolaudaci?' <span class="tag">Po kolaudaci</span>':""}</h2>`;
+    if(!S.readOnly&&f.rooms.length>1)h+=S.confirm==="del-"+r.id
+      ?`<button class="btn danger" data-del="${r.id}">Opravdu odebrat</button>`
+      :`<button class="btn" data-ask="del-${r.id}">Odebrat</button>`;
+    h+=`</div>`;
+    h+=`<div class="field"><label for="n-${r.id}">Číslo místnosti dle projektu</label><input type="text" id="n-${r.id}" data-no="${r.id}" value="${esc(r.no||"")}" maxlength="30" autocomplete="off" placeholder="např. 1.05" ${S.readOnly?"disabled":""}></div>`;
+    h+=`<label class="toggle"><input type="checkbox" id="k-${r.id}" data-kol="${r.id}" ${r.poKolaudaci?"checked":""} ${S.readOnly?"disabled":""}><span>Až po kolaudaci (mimo první objednávku)</span></label>`;
+    for(const g of roomGroups(r))h+=field(r,g);
+    const checklist=(title,keys)=>{
+      let c=`<div class="toggles"><h3>${title}</h3>`;
+      for(const t of keys){const o=S.opts[t];if(!o)continue;
+        c+=`<label class="toggle"><input type="checkbox" id="t-${r.id}-${t}" data-room="${r.id}" data-t="${t}" ${r.sel[t]?"checked":""} ${S.readOnly?"disabled":""}><span>${esc(o.label)}</span></label>`}
+      return c+`</div>`;
+    };
+    h+=checklist("Doplňky",EXTRAS);
+    if(r.type!=="wc")h+=checklist("Přípojky",CONNECTIONS);
+    h+=`</article>`;
+  }
+  if(!S.readOnly){
+    h+=`<div class="row"><button class="btn main" data-add="koupelna">+ Koupelna</button><button class="btn main" data-add="wc">+ Samostatné WC</button>`;
+    h+=S.confirm==="reset"?`<button class="btn danger" data-reset>Opravdu vymazat výběr</button>`:`<button class="btn" data-ask="reset">Vymazat výběr v bytě</button>`;
+    h+=`</div>`;
+  }
+  return h;
+}
+
+function scopeFlats(){
+  const a=flatList(),s=S.scope;
+  if(s==="all")return a;
+  const [k,v]=s.split(":");
+  if(k==="floor"){const fl=FLOORS.find(x=>x.n==v);return a.filter(f=>f.n>=fl.from&&f.n<=fl.to)}
+  return a.filter(f=>f.n==v);
+}
+const PHASES={first:"První objednávka",later:"Po kolaudaci",all:"Vše dohromady"};
+const orderFlats=()=>filterPhase(scopeFlats(),S.phase);
+function scopeSelect(){
+  let h=`<div class="field"><label for="phase">Objednávka</label><select id="phase">${Object.keys(PHASES).map(k=>`<option value="${k}"${S.phase===k?" selected":""}>${PHASES[k]}</option>`).join("")}</select></div>`;
+  h+=`<div class="field"><label for="scope">Zobrazit</label><select id="scope"><option value="all"${S.scope==="all"?" selected":""}>Celý dům</option>`;
+  for(const fl of FLOORS)h+=`<option value="floor:${fl.n}"${S.scope==="floor:"+fl.n?" selected":""}>${fl.n}. NP (byty ${fl.from} až ${fl.to})</option>`;
+  for(const f of flatList())h+=`<option value="flat:${f.n}"${S.scope==="flat:"+f.n?" selected":""}>Byt ${f.n}</option>`;
+  return h+`</select></div>`;
+}
+function viewOrder(){
+  const A=aggregate(orderFlats(),S.opts,S.items);
+  let h=`<div class="top"><h1>Objednávka</h1>${syncPill()}</div>${scopeSelect()}`;
+  h+=`<div class="sum"><div><b>${kc(A.total)}</b><span class="muted small">Kč bez DPH, jen položky s cenou</span></div><div><b>${A.rows.length}</b><span class="muted small">různých položek</span></div><div><b>${A.unpriced}</b><span class="muted small">položek bez ceny</span></div><div><b>${A.missing}</b><span class="muted small">nevyplněných polí</span></div></div>`;
+  if(A.unpriced)h+=`<p class="notice">Součet je neúplný: ${A.unpriced} položek čeká na cenu od SIKO.</p>`;
+  h+=`<div class="row"><button class="btn main" data-xlsx ${A.rows.length||A.customs.length?"":"disabled"}>Stáhnout XLSX</button></div>`;
+  if(S.msg)h+=`<p class="small muted">${esc(S.msg)}</p>`;
+  if(A.rows.length){
+    h+=`<div class="table-wrap"><table><thead><tr><th>Položka</th><th class="num">Ks</th><th class="num">Cena bez DPH</th><th class="num">Celkem Kč</th></tr></thead><tbody>`;
+    for(const r of A.rows)h+=`<tr><td>${esc(r.name)}<div class="code">${esc(r.code)||"kód doplní SIKO"}</div></td><td class="num">${r.qty}</td><td class="num">${r.price===null?'<span class="tag">cena ?</span>':kc(r.price)}</td><td class="num">${r.sum===null?"":kc(r.sum)}</td></tr>`;
+    h+=`</tbody></table></div>`;
+  }else h+=`<p class="muted">Zatím tu nic není. Položky se objeví po výběru v bytech.</p>`;
+  h+=`<section><h2>Upřesnit s klientem (${A.customs.length})</h2>`;
+  if(A.customs.length){
+    h+=`<div class="table-wrap"><table><thead><tr><th>Byt</th><th>Místnost</th><th>Položka</th></tr></thead><tbody>`;
+    for(const c of A.customs)h+=`<tr><td class="num">${c.flat}</td><td>${esc(c.room)}</td><td>${esc(GROUPS[c.group].label)}</td></tr>`;
+    h+=`</tbody></table></div>`;
+  }else h+=`<p class="muted small">Žádná položka nečeká na klienta.</p>`;
+  return h+`</section>`;
+}
+function viewCheck(){
+  const fl=flatList(),c=countSelections(fl,S.opts),A=aggregate(fl,S.opts,S.items);
+  const bat=(A.rows.find(r=>r.id==="SATBAUR271CR")||{qty:0}).qty;
+  const rows=[["WC",c.wc,56],["Vany",c.vana,13],["Sprchy",c.sprcha,40],["Umyvadla",c.umyv,50],["Dvojumyvadla",c.dvoj,7],["Umyvadlové baterie v objednávce",bat,64]];
+  let h=`<div class="top"><h1>Kontrola</h1>${syncPill()}</div><p class="muted">Porovnání s listem Standardy. Slouží jen pro orientaci, výběr v bytech má přednost. Počty výrobků zahrnují i svůj variant, baterie jen objednané položky.</p>`;
+  h+=`<div class="table-wrap"><table><thead><tr><th>Výrobek</th><th class="num">Vybráno</th><th class="num">Standardy</th><th class="num">Rozdíl</th></tr></thead><tbody>`;
+  for(const [n,a,b] of rows){const d=a-b;h+=`<tr><td>${n}</td><td class="num">${a}</td><td class="num">${b}</td><td class="num ${d?"off":"ok"}">${d>0?"+":""}${d}</td></tr>`}
+  h+=`</tbody></table></div>`;
+  const st={};for(const f of fl){const s=flatStatus(f,S.opts);st[s]=(st[s]||0)+1}
+  h+=`<div class="sum">${["none","wip","done","custom"].map(k=>`<div><b>${st[k]||0}</b><span class="muted small">${STATUS[k]}</span></div>`).join("")}</div>`;
+  return h;
+}
+function render(force){
+  const a=document.activeElement;
+  if(!force&&a&&(a.tagName==="SELECT"||a.type==="text")){deferred=true;return}
+  deferred=false;
+  const focusId=a&&a.id;
+  const app=$("#app");
+  if(S.noDb)app.innerHTML=`<h1>Sanita BD Nehvizdy</h1><p class="notice">Data nejsou v tomto zobrazení dostupná. Tento kód k Sanitě nemá přístup. Požádejte Marinu o odkaz.</p>`;
+  else if(!ready())app.innerHTML=`<h1>Sanita BD Nehvizdy</h1><p class="muted">${S.slow?"Data se zatím nedaří načíst. Zkontrolujte signál, načtou se samy.":"Načítám byty a katalog…"}</p>`;
+  else app.innerHTML=S.view==="flat"?viewFlat():S.view==="order"?viewOrder():S.view==="check"?viewCheck():viewFlats();
+  const tab=S.view==="flat"?"flats":S.view;
+  $("#nav").innerHTML=[["flats","Byty"],["order","Objednávka"],["check","Kontrola"]].map(([k,l])=>`<button data-tab="${k}" class="${tab===k?"on":""}" ${tab===k?'aria-current="page"':""}>${l}</button>`).join("");
+  if(focusId){const el=document.getElementById(focusId);if(el)el.focus({preventScroll:true})}
+}
+
+function edit(fn){
+  const f=JSON.parse(JSON.stringify(getFlat(S.flat)));
+  fn(f);S.confirm=null;saveFlat(f);
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  const d=b.dataset;
+  if(d.tab){S.view=d.tab;S.confirm=null;S.msg="";render(true);scrollTo(0,0)}
+  else if(d.open){S.flat=+d.open;S.view="flat";S.confirm=null;render(true);scrollTo(0,0)}
+  else if("back" in d){S.view="flats";S.confirm=null;render(true)}
+  else if(d.go){S.flat=+d.go;S.confirm=null;render(true);scrollTo(0,0)}
+  else if(d.ask){S.confirm=d.ask;render(true)}
+  else if(d.add)edit(f=>f.rooms.push(newRoom(f,d.add)));
+  else if(d.del)edit(f=>{f.rooms=f.rooms.filter(r=>r.id!==d.del)});
+  else if("reset" in d)edit(f=>{f.rooms=[newRoom({rooms:[],defaultCustom:f.defaultCustom},"koupelna")]});
+  else if("xlsx" in d)exportXlsx();
+});
+document.addEventListener("change",e=>{
+  const t=e.target;
+  if(t.id==="scope"){S.scope=t.value;S.msg="";t.blur();render(true);return}
+  if(t.id==="phase"){S.phase=t.value;S.msg="";t.blur();render(true);return}
+  if(t.dataset.kol){edit(f=>{f.rooms.find(x=>x.id===t.dataset.kol).poKolaudaci=t.checked});return}
+  if(t.dataset.no){edit(f=>{f.rooms.find(x=>x.id===t.dataset.no).no=t.value.trim()});return}
+  if(t.dataset.t){edit(f=>{const r=f.rooms.find(x=>x.id===t.dataset.room);r.sel[t.dataset.t]=t.checked});return}
+  if(t.dataset.g){edit(f=>{
+    const r=f.rooms.find(x=>x.id===t.dataset.room),g=t.dataset.g;
+    r.sel[g]=t.value;
+    if(g==="zastena"){
+      if(!t.value||t.value===NONE)r.sel.odtok="";
+      else if(t.value===CUSTOM)r.sel.odtok=r.sel.odtok||CUSTOM;
+    }
+  })}
+});
+document.addEventListener("focusout",()=>{if(deferred)setTimeout(()=>render(),0)});
+
+async function exportXlsx(){
+  const fl=orderFlats(),A=aggregate(fl,S.opts,S.items);
+  try{
+    if(typeof XLSX==="undefined")throw{code:"lib"};
+    const wb=XLSX.utils.book_new();
+    const o=XLSX.utils.aoa_to_sheet([["Kód","Název","Ks","Cena bez DPH (Kč)","Celkem bez DPH (Kč)"]]);
+    A.rows.forEach((r,i)=>{const n=i+2;
+      XLSX.utils.sheet_add_aoa(o,[[r.code,r.name,r.qty,r.price===null?"":r.price]],{origin:"A"+n});
+      o["E"+n]={t:r.sum===null?"s":"n",v:r.sum===null?"":r.sum,f:`IF(D${n}="","cena ?",C${n}*D${n})`};
+    });
+    const last=A.rows.length+1,tr=last+1;
+    XLSX.utils.sheet_add_aoa(o,[["","Celkem bez DPH, jen položky s cenou"]],{origin:"A"+tr});
+    o["E"+tr]={t:"n",v:A.total,f:`SUM(E2:E${last})`};
+    o["!ref"]="A1:E"+tr;o["!cols"]=[{wch:20},{wch:48},{wch:6},{wch:16},{wch:18}];
+    XLSX.utils.book_append_sheet(wb,o,"Objednávka");
+    const rows=[["Byt","Místnost","Kód","Název","Ks","Cena bez DPH (Kč)","Objednávka"]];
+    for(const f of fl)for(const r of f.rooms)for(const l of explodeRoom(r,S.opts).lines){
+      const it=S.items[l.i]||{};rows.push([f.n,roomLabel(r),it.code||"",it.name||l.i,l.q,typeof it.price==="number"?it.price:"",r.poKolaudaci?PHASES.later:PHASES.first]);
+    }
+    const p=XLSX.utils.aoa_to_sheet(rows);p["!cols"]=[{wch:5},{wch:16},{wch:20},{wch:48},{wch:5},{wch:16}];
+    XLSX.utils.book_append_sheet(wb,p,"Po bytech");
+    const u=XLSX.utils.aoa_to_sheet([["Byt","Místnost","Položka"],...A.customs.map(c=>[c.flat,c.room,GROUPS[c.group].label])]);
+    u["!cols"]=[{wch:5},{wch:18},{wch:32}];
+    XLSX.utils.book_append_sheet(wb,u,"Upřesnit");
+    const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});
+    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
+    a.download=`Sanita_Nehvizdy_objednavka_${{first:"prvni",later:"po_kolaudaci",all:"vse"}[S.phase]}.xlsx`;
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),60000);
+    S.msg="Soubor je uložený.";
+  }catch(e){
+    S.msg=e&&e.code==="declined"?"Stažení bylo zrušeno.":e&&e.code==="lib"?"Knihovna pro XLSX se nenačetla. Zkontrolujte signál a obnovte stránku.":"Stažení tady není dostupné. Otevřete aplikaci v prohlížeči nebo aplikaci Claude.";
+  }
+  render(true);
+}
+
+const SUPA_URL="https://adcdobpbkbirsvdvcfyb.supabase.co",SUPA_KEY="sb_publishable_IvglSuxeXJ8iimxyxA34Bw_LvodLxt4";
+function kod(){
+  const m=location.hash.match(/k=([0-9a-f]+)/);
+  if(m){try{localStorage.setItem("kd-token",m[1])}catch(e){}history.replaceState(null,"",location.pathname);return m[1]}
+  try{return localStorage.getItem("kd-token")||""}catch(e){return""}
+}
+const KOD=kod();
+const headers=()=>({apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY,"x-edit-token":KOD,"Content-Type":"application/json"});
+db={doc:p=>({set:async data=>{
+  const r=await fetch(SUPA_URL+"/rest/v1/sanita_docs?on_conflict=path",{method:"POST",headers:{...headers(),Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify({path:p,data,updated_at:new Date().toISOString()})});
+  if(r.status===401||r.status===403)throw{code:"revoked"};
+  if(!r.ok)throw{code:"http"};
+}})};
+let lastDocs="";
+async function pull(){
+  const r=await fetch(SUPA_URL+"/rest/v1/sanita_docs?select=path,data",{headers:headers()});
+  if(!r.ok)throw{code:"http"};
+  const txt=await r.text();
+  if(txt===lastDocs)return;
+  const docs=JSON.parse(txt);
+  if(!docs.length){S.noDb=true;render();return}
+  lastDocs=txt;S.noDb=false;
+  const flats={};
+  for(const d of docs){
+    if(d.path==="catalog/items")S.items=d.data.items;
+    else if(d.path==="blocks/options"){S.optList=d.data.options;S.opts=Object.fromEntries(S.optList.map(o=>[o.id,o]))}
+    else if(d.path.startsWith("flats/"))flats[d.data.n]=d.data;
+  }
+  S.flats=flats;S.loaded.flats=true;
+  render();
+}
+const tryPull=()=>pull().catch(()=>{S.slow=true;render()});
+async function start(){
+  render();
+  if(!KOD){S.noDb=true;render();return}
+  await tryPull();
+  setInterval(()=>{if(!document.hidden)tryPull()},15000);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)tryPull()});
+  addEventListener("online",()=>{tryPull();flush()});
+  if(Object.keys(S.pending).length)flush();
+}
+start();
+})();
+</script>
+</body></html>
