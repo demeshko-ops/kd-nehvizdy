@@ -791,16 +791,19 @@ function alive(){
     .map(([id,rec]) => ({id, rec, st: stavMap.get(id) || {stav:"Trvá", odpovida:"Externí", termin:"", terminText:"", terminZdroj:""}}))
     .sort((a,b)=>(a.rec.poradi||0)-(b.rec.poradi||0));
 }
+/* Návod pro klienta není úkol ze stavby: nepatří na nástěnku ani mezi všechny body. */
+const jeNavod = klic => ((SCH.get(klic)||{}).typ === "NAVOD");
+function aliveUkoly(){ return alive().filter(x => !jeNavod(x.rec.klic)); }
 function isLate(st){
   return st.stav==="Trvá" && st.termin && st.termin < todayIso();
 }
 
 function renderTabs(){
-  const n = alive().length;
+  const n = aliveUkoly().length;
   const tabs = [
     {k:"board", t:"Nástěnka", d:String(n)},
     {k:"all", t:"Všechny body", d:String(n)},
-    ...KD.map(k=>({k:"z"+k.klic, t:k.label, d:k.datum})),
+    ...KD.map(k=>({k:"z"+k.klic, t:k.label, d:k.typ==="NAVOD" ? "" : k.datum})),
   ];
   if(isOwner) tabs.push({k:"arch", t:"Archiv", d:String(archMap.size)});
   document.getElementById("tabs").innerHTML = tabs.map(t=>
@@ -886,6 +889,7 @@ function vazbyHtml(rec){
 
 function itemHtml(x, showKd){
   const {id,rec,st}=x;
+  const jeN = jeNavod(rec.klic);
   const color = kdoBarva(st.odpovida);
   const open = !!ui.open[id];
   const cls = "s-"+(STAV_CLS[st.stav]||"trva");
@@ -907,9 +911,9 @@ function itemHtml(x, showKd){
     <div class="ibody">
       ${isOwner?`<div class="nazevrow"><button class="bedit${hlavUprava(id)?" on":""}" data-act="hlavTgl" data-id="${id}">${hlavUprava(id)?"Hotovo s názvem":"Upravit název a oblast"}</button></div>`:""}
       ${hlavUprava(id) ? poleBlok(id,"tema","Téma bodu",rec.tema,"",true) + poleBlok(id,"kat","Oblast",rec.kat,"",true) : ""}
-      ${poleBlok(id,"projednano","Projednáno",rec.projednano,"projednano")}
-      ${poleBlok(id,"rozhodnuto","Rozhodnuto",rec.rozhodnuto,"")}
-      ${(isOwner||rec.ukol) ? poleBlok(id,"ukol","Úkol",rec.ukol,"ukol") : ""}
+      ${poleBlok(id,"projednano",jeN?"Kontext ze stavby":"Projednáno",rec.projednano,"projednano")}
+      ${poleBlok(id,"rozhodnuto",jeN?"Text do návodu":"Rozhodnuto",rec.rozhodnuto,"")}
+      ${(isOwner||rec.ukol) ? poleBlok(id,"ukol",jeN?"K dořešení":"Úkol",rec.ukol,"ukol") : ""}
 
       <div class="ctl${isOwner?"":" off"}">
         ${isOwner?"":`<p class="lock">Jen ke čtení. Úpravy odemknete kódem v záhlaví stránky.</p>`}
@@ -968,7 +972,7 @@ function itemHtml(x, showKd){
 }
 
 function renderBoard(){
-  const scope = alive();
+  const scope = aliveUkoly();
   const items = applyFilters(scope);
   const cols = STAVY.map(s => ({s, items: items.filter(x=>x.st.stav===s)}));
   return kpis(scope) + filterBar(scope) + `<div class="board">` + cols.map(c=>`
@@ -1008,12 +1012,18 @@ function renderArchiv(){
 }
 
 function renderList(klic){
-  const scope = alive().filter(x => klic==null || x.rec.klic===klic);
+  const scope = alive().filter(x => klic==null ? !jeNavod(x.rec.klic) : x.rec.klic===klic);
   const items = applyFilters(scope);
   let head = "";
   if(klic!=null){
     const k = SCH.get(klic);
-    if(k) head = `<div class="meta"><dl class="metagrid">
+    if(k && k.typ==="NAVOD") head = `<div class="meta"><dl class="metagrid">
+      <dt>Soubor</dt><dd><strong>Budoucí návod pro klienta</strong></dd>
+      <dt>Účel</dt><dd>${esc(k.predmet)}</dd>
+      <dt>Doplňuje se</dt><dd>${esc(k.misto)}</dd>
+      <dt>Podklad</dt><dd><span class="mono">${esc(k.zdroj)}</span></dd>
+    </dl><div class="note">${esc(k.pozn)}</div></div>`;
+    else if(k) head = `<div class="meta"><dl class="metagrid">
       <dt>Zápis</dt><dd><strong>${k.typ==="KD"?("Zápis z kontrolního dne č. "+k.cislo):(k.typ==="PORADA"?("Zápis z pracovní porady, "+esc(k.datum)):k.typ==="JEDNANI"?("Zápis z "+esc(k.lokativ)+", "+esc(k.datum)):("Zápis ze schůzky s investorem, "+esc(k.datum)))}</strong></dd>
       <dt>Datum${k.cas ? " a čas" : ""}</dt><dd><span class="mono">${esc(k.datum)}${k.cas ? " · " + esc(k.cas) : ""}</span></dd>
       <dt>Místo konání</dt><dd>${esc(k.misto)}</dd>
